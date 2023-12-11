@@ -33,13 +33,8 @@ class MangaInfoWidget(WindowWidget):
     def setup(self):
 
         def scrape_manga():
-            # manga = self.db.get_manga_by_id(self.manga.get_id())
-            # if manga is not None:
-            #     self.manga = manga
-            #     return
             self.scrapper = get_scrapper(self.manga.scrapper)()
             self.manga = self.scrapper.scrape_manga(self.manga)
-            # self.add_manga_to_lib(Libs.No_Lib.value)
 
         worker = Worker(scrape_manga)
         worker.signals.error.connect(self.setup_error.emit)

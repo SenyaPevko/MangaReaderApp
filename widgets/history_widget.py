@@ -15,7 +15,7 @@ from utils.threads import Worker, ThreadPool
 class HistoryWidget(QWidget):
     clicked_manga = pyqtSignal(Manga)
     clicked_chapter = pyqtSignal(list)
-    delete_history = pyqtSignal()
+    delete_history = pyqtSignal(str)
 
     def __init__(self, manga_history: MangaHistory):
         super().__init__()
@@ -58,7 +58,7 @@ class HistoryWidget(QWidget):
         self.ui.image.clicked.connect(lambda: self.clicked_manga.emit(self.manga))
         self.ui.mangaNameLabel.clicked.connect(self.open_reader)
         self.ui.mangaHistoryLabel.clicked.connect(self.open_reader)
-        self.ui.deleteButton.clicked.connect(self.delete_history)
+        self.ui.deleteButton.clicked.connect(lambda: self.delete_history.emit(self.id))
         self.update_image()
 
     def get_image(self):
@@ -67,7 +67,7 @@ class HistoryWidget(QWidget):
 
     def set_image(self):
         self.ui.image.clear()
-        image_size = QSize(self.width() // 3, self.height() // 2)
+        image_size = QSize(self.width(), self.height() - 20)
         pixmap = self.manga_pixmap.scaled(image_size, Qt.AspectRatioMode.KeepAspectRatio,
                                           Qt.TransformationMode.SmoothTransformation)
         self.ui.image.setPixmap(pixmap)

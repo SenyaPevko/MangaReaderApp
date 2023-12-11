@@ -1,5 +1,6 @@
 from PyQt6.QtCore import Qt, pyqtSignal
 from models.manga import Manga
+from models.manga_history import MangaHistory
 from pages.page import Page
 from ui.pages.history_ui import Ui_Form
 from utils.database import Database
@@ -40,7 +41,8 @@ class HistoryPage(Page):
             history_widget = HistoryWidget(manga_history)
             history_widget.clicked_manga.connect(self.open_manga)
             history_widget.clicked_chapter.connect(self.open_reader)
-            history_widget.delete_history.connect(lambda: self.delete_manga_history(history_widget))
+            history_widget.delete_history.connect(self.delete_manga_history)
+            history_widget.ui.textFrame.setMaximumWidth(self.ui.historyWidgetsLayout.maximumSize().width())
             self.history_widgets.append(history_widget)
             self.ui.historyWidgetsLayout.addWidget(history_widget)
 
@@ -53,7 +55,10 @@ class HistoryPage(Page):
     def update(self):
         self.setup()
 
-    def delete_manga_history(self, history_widget: HistoryWidget):
+    def delete_manga_history(self, id: str):
+        for history_widget in self.history_widgets:
+            if history_widget.id == id:
+                break
         self.db.remove_manga_history_id(history_widget.id)
         self.history_widgets.remove(history_widget)
         self.ui.historyWidgetsLayout.removeWidget(history_widget)

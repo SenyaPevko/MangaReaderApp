@@ -25,7 +25,8 @@ class MangaInfoWidget(WindowWidget):
         self.chapters_list = self.ui.chaptersList
         self.scrapper = None
         self.db = Database()
-        self.ui.bookMarkButton.clicked.connect(lambda: self.add_manga_to_lib(self.ui.librariesList.currentText()))
+        self.ui.bookMarkButton.clicked.connect(
+            lambda: self.add_manga_to_lib(self.ui.librariesList.currentText()))
         self.chapters_list.clicked.connect(self.open_reader)
         self.ui.librariesList.currentIndexChanged.connect(self.update_bookmark)
         self.setup()
@@ -125,6 +126,7 @@ class MangaInfoWidget(WindowWidget):
         else:
             self.manga.lib = Libs.No_Lib.value
             self.db.update_manga_lib(self.manga.get_id(), self.manga.lib)
+            self.update_bookmark()
 
     def set_libs_list(self):
         self.ui.librariesList.addItem(Libs.Reading.value)

@@ -1,0 +1,44 @@
+#listWidget::item {
+    border: 0px;
+    padding: 5px 10px;
+    margin: 2px 0;
+}
+
+#listWidget::item {
+    padding-top: 0px;
+}
+
+#listWidget::item:hover {
+    background-color: #dadada;
+}
+
+#listWidget::item:selected {
+    background-color: #00aaff;
+}
+
+
+#listWidget::icon {
+    width: 23px;
+    height: 23px;
+}
+
+QStackedWidget,
+{
+    background-color: #FCFBFF;
+}
+
+#listWidget{
+    padding-top: 160px;
+}
+
+QListWidget{
+    background-color: #f0f0f0;
+}
+
+#stackedWidget{
+    border: 1px solid #828790;
+}
+
+#stackedWidget {
+    border-left: none;
+}

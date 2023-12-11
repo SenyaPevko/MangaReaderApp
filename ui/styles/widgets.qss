@@ -1,0 +1,50 @@
+QMainWindow
+{
+    color: #F3F5F9;
+    background-color: #F3F5F9;
+}
+
+
+QMainWindow#ReaderWindow QFrame, QWidget#scroll_area_content, QWidget#scrollAreaWidgetContents
+{
+    border-radius: 10px;
+    background-color: #F3F5F9;
+}
+
+QWidget#manga_widget QFrame
+{
+    background-color: #FCFBFF;
+    border-radius: 10px;
+}
+QWidget#manga_widget[is_set="0"] QFrame
+{
+    background-color: #FCFBFF;
+}
+QWidget#manga_widget[is_set="1"] QFrame
+{
+    background-color: #E8E7EB;
+}
+
+
+QStackedWidget QFrame
+{
+    border-radius: 10px;
+}
+
+QTreeWidget
+{
+    border-radius: 10px;
+    background-color: #FCFBFF
+}
+
+QFrame QTextBrowser
+{
+    border-radius: 10px;
+    background-color: #FCFBFF
+}
+
+QWidget#historyWidget QFrame
+{
+    background-color: #FCFBFF;
+    border-radius: 10px;
+}

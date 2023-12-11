@@ -122,6 +122,13 @@
          </spacer>
         </item>
         <item>
+         <widget class="QLabel" name="pageLabel">
+          <property name="text">
+           <string>Страница</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QComboBox" name="pagesList"/>
         </item>
         <item>

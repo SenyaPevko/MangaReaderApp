@@ -43,6 +43,10 @@ class BrowserPage(Page):
         self.search_bar.returnPressed.connect(lambda: self.open_catalog(self.search_bar.text(), 1))
         self.pages_list.currentIndexChanged.connect(
             lambda: self.get_content(self.request, self.pages_list.currentIndex()+1))
+        self.ui.nextPageButton.clicked.connect(
+            lambda: self.get_content(self.request, self.pages_list.currentIndex()+2))
+        self.ui.previousPageButton.clicked.connect(
+            lambda: self.get_content(self.request, self.pages_list.currentIndex()))
 
     def open_catalog(self, request, page):
         self.get_content(request, page)
@@ -52,12 +56,19 @@ class BrowserPage(Page):
         self.request = request
         if not (1 <= page <= len(self.pages_list)):
             return
-        self.page = page
+        self.change_page(page)
         worker = Worker(lambda: self.scrapper.get_content(request, page))
         mangas = []
         worker.signals.result.connect(lambda x: mangas.extend(x))
         worker.signals.finished.connect(lambda: self.add_content(mangas))
         self.threadpool.start(worker)
+
+    def change_page(self, page):
+        if page > self.pages_list.currentIndex()+1:
+            self.pages_list.setCurrentIndex(page-1)
+        elif page == self.pages_list.currentIndex():
+            self.pages_list.setCurrentIndex(page-1)
+        self.page = page
 
     def add_content(self, mangas: list[Manga]):
         self.manga_scroll_area.delete_content()

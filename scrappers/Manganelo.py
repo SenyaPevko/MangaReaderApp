@@ -1,9 +1,11 @@
+from Enums.ManganeloUrls import ManganeloUrls
 from models.chapter_page import ChapterPage
 from models.chapter import Chapter
 from scrappers.scrapper import Scrapper
 from bs4 import BeautifulSoup
 import requests
 from models.manga import Manga
+import re
 
 
 class Manganelo(Scrapper):
@@ -14,12 +16,35 @@ class Manganelo(Scrapper):
     def __init__(self):
         super().__init__()
         self.name = "Manganelo"
+        self.current_url = ManganeloUrls.Catalog.value
 
-    def search(self, request: str):
-        source = requests.get("https://m.manganelo.com/search/story/" + "_".join(request.split())).text
+    def get_search_content(self, request: str, page: int):
+        self.current_url = ManganeloUrls.Search.value
+        source = requests.get(ManganeloUrls.Search.value
+                              + "_".join(request.split())
+                              + fr"?page={str(page)}").text
         soup = BeautifulSoup(source, "lxml")
+        cards = soup.find_all("div", class_="search-story-item")
+        return cards
 
-        for card in soup.find_all("div", class_="search-story-item"):
+    def get_catalog_content(self, page: int):
+        self.current_url = ManganeloUrls.Catalog.value
+        source = requests.get(f"{ManganeloUrls.Catalog.value}{page}").text
+        soup = BeautifulSoup(source, "lxml")
+        cards = soup.find_all("div", class_="content-genres-item")
+        return cards
+
+    def get_content(self, request, page):
+        if request == "":
+            cards = self.get_catalog_content(page)
+            self.current_url = ManganeloUrls.Catalog.value
+        else:
+            cards = self.get_search_content(request, page)
+            self.current_url = (ManganeloUrls.Search.value
+                                + "_".join(request.split())
+                                + fr"?page={str(page)}")
+
+        for card in cards:
             name = card.find_next("a")["title"]
             url = card.find_next("a")["href"]
             image = card.find_next("img")["src"]
@@ -28,6 +53,18 @@ class Manganelo(Scrapper):
             manga = Manga(name, url, image, scrapper, id)
 
             yield manga
+
+    def get_catalog_pages(self):
+        try:
+            source = requests.get(f"{self.current_url}").text
+            soup = BeautifulSoup(source, "lxml")
+            pages = soup.find("div", class_="group-page")
+            page_text = pages.find_next("a", class_="page-blue page-last").text
+            last_page = re.findall(r"[0-9]+", page_text)[0]
+            return int(last_page)
+        except Exception as e:
+            print(e)
+        return 1
 
     def scrape_manga(self, manga: Manga):
         source = requests.get(manga.url).text

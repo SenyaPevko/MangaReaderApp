@@ -25,7 +25,8 @@ class HistoryWidget(QWidget):
         self.manga_pixmap = None
         self.threadpool = QThreadPool()
         self.page = manga_history.page
-        self.chapter = manga_history.chapter
+        self.chapter_name = manga_history.chapter_name
+        self.chapter_number = manga_history.chapter_number
         self.scrapper = None
         self.db = Database()
         self.id = manga_history.id
@@ -52,7 +53,7 @@ class HistoryWidget(QWidget):
 
     def setup_ui(self):
         self.ui.mangaNameLabel.setText(self.manga.name)
-        self.ui.mangaHistoryLabel.setText(f"Глава - {self.chapter} "
+        self.ui.mangaHistoryLabel.setText(f"Глава - {self.chapter_name} "
                                           f"Страница - {self.page}")
         self.ui.image.clicked.connect(lambda: self.clicked_manga.emit(self.manga))
         self.ui.mangaNameLabel.clicked.connect(self.open_reader)
@@ -77,5 +78,5 @@ class HistoryWidget(QWidget):
         self.threadpool.start(worker)
 
     def open_reader(self):
-        self.clicked_chapter.emit([self.manga, self.scrapper.get_chapters(self.manga), self.chapter-1])
+        self.clicked_chapter.emit([self.manga, self.scrapper.get_chapters(self.manga), self.chapter_number-1])
 

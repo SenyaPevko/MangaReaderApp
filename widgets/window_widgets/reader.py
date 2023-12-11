@@ -64,6 +64,7 @@ class Reader(WindowWidget):
     def save_manga_history(self):
         self.db.add_manga_history(MangaHistory(self.manga.get_id(),
                                                self.chapters[self.current_chapter_index].title,
+                                               self.current_chapter_index+1,
                                                self.current_page_number))
 
     def turn_next_page(self):

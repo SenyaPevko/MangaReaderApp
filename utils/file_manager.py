@@ -11,10 +11,10 @@ from models.manga import Manga
 
 
 class FileManager:
-    TEMP_PATH = rf"{platformdirs.user_data_dir()}\MangaReaderAppTemp\Temp"
+    TEMP_PATH = rf"{os.getcwd()}\MangaReaderAppTemp\Temp"
     TEMP_CHAPTERS = TEMP_PATH + r"\Chapters"
     TEMP_PREVIEWS = TEMP_PATH + r"\Previews"
-    DOWNLOADS_PATH = rf"{platformdirs.user_data_dir()}\MangaReaderAppTemp\Downloads"
+    DOWNLOADS_PATH = rf"{os.getcwd()}\MangaReaderAppTemp\Downloads"
 
     @staticmethod
     def make_path(string):

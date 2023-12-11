@@ -1,3 +1,4 @@
+import os
 import sqlite3
 from threading import Lock
 
@@ -9,7 +10,7 @@ from utils.file_manager import FileManager
 
 @singleton
 class Database(object):
-    DIR_PATH = rf"{platformdirs.user_data_dir()}\MangaReaderAppTemp"
+    DIR_PATH = rf"{os.getcwd()}\MangaReaderAppTemp"
     FILE_NAME = r"\db.db"
     lock = Lock()
     def __init__(self):
@@ -31,7 +32,7 @@ class Database(object):
 
         self.cursor.execute(
             """CREATE TABLE IF NOT EXISTS MangasHistory (id STRING PRIMARY KEY ON CONFLICT REPLACE NOT NULL, 
-            chapter INTEGER, page INTEGER);""")
+            chapter_name STRING, chapter_number INTEGER, page INTEGER);""")
 
     @with_lock_thread(lock)
     def add_manga(self, manga: Manga):
@@ -103,12 +104,15 @@ class Database(object):
             return
         history_data.reverse()
         for data in history_data:
-            yield MangaHistory(data[0], data[1], data[2])
+            yield MangaHistory(data[0], data[1], data[2], data[3])
 
     @with_lock_thread(lock)
     def add_manga_history(self, manga_history: MangaHistory):
-        self.cursor.execute("""INSERT INTO MangasHistory (id, chapter, page) VALUES (?, ?, ?)""",
-                            (manga_history.get_id(), manga_history.chapter, manga_history.page))
+        self.cursor.execute("""INSERT INTO MangasHistory (id, chapter_name, chapter_number, page) VALUES (?, ?, ?, ?)""",
+                            (manga_history.get_id(),
+                             manga_history.chapter_name,
+                             manga_history.chapter_number,
+                             manga_history.page))
         self.connection.commit()
 
     @with_lock_thread(lock)

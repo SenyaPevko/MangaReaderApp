@@ -14,7 +14,7 @@ from widgets.window_widgets.reader import Reader
 from widgets.window_widgets.window_widget import WindowWidget
 
 
-# pyuic6.exe .\history.ui -o .\history_ui.py
+# pyuic6.exe .\browser.ui -o .\browser_ui.py
 
 class App(QApplication):
     def __init__(self, argv):

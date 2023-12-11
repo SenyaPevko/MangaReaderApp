@@ -6,7 +6,7 @@ class Scrapper:
     def __init__(self):
         self.name = None
 
-    def search(self, request: str):
+    def search(self, request: str, page):
         pass
 
     def scrape_manga(self, manga: Manga):
@@ -16,6 +16,9 @@ class Scrapper:
         pass
 
     def get_chapter_pages(self, chapter: Chapter):
+        pass
+
+    def get_content(self, page, request):
         pass
 
     @staticmethod

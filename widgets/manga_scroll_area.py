@@ -1,5 +1,7 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QScrollArea, QWidget, QVBoxLayout, QGridLayout, QSpacerItem, QSizePolicy, QLabel
+
+from utils.decorators import catch_exception
 from widgets.manga_preview_widget import MangaWidget
 
 
@@ -23,8 +25,8 @@ class MangaScrollArea(QScrollArea):
 
         self.scroll_layout.addLayout(self.content_grid)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-        self.scroll_layout.addItem(self.verticalSpacer)
+        self.vertical_spacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.scroll_layout.addItem(self.vertical_spacer)
         self.setWidget(self.scroll_area_content)
 
         self.is_empty_label = None
@@ -32,11 +34,13 @@ class MangaScrollArea(QScrollArea):
         if parent is not None:
             parent.addWidget(self)
 
+    @catch_exception
     def scroll_resize_event(self, event):
         if event.oldSize().width() != event.size().width():
             self.update_content()
         event.accept()
 
+    @catch_exception
     def add_content(self, manga_list: list[MangaWidget]):
         raw_count, column_count = 0, 0
         for manga in manga_list:
@@ -50,6 +54,7 @@ class MangaScrollArea(QScrollArea):
                 raw_count += 1
         self.is_content_empy()
 
+    @catch_exception
     def delete_content(self):
         self.verticalScrollBar().setValue(0)
         for item in self.manga_list:
@@ -57,10 +62,12 @@ class MangaScrollArea(QScrollArea):
             item.deleteLater()
         self.manga_list.clear()
 
+    @catch_exception
     def update_content(self):
         size = self.size().width() // self.column_count
         [item.set_size(size) for item in self.manga_list]
 
+    @catch_exception
     def is_content_empy(self):
         if len(self.manga_list) != 0 and self.is_empty_label is not None:
             self.content_grid.removeWidget(self.is_empty_label)

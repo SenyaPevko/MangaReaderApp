@@ -1,8 +1,10 @@
 from PyQt6.QtCore import QThreadPool, pyqtSignal
+from PyQt6.QtWidgets import QCompleter
 
 from models.manga import Manga
 from pages.page import Page
 from ui.pages.browser_ui import Ui_Form
+from utils.decorators import catch_exception
 from utils.threads import Worker
 
 from widgets.manga_scroll_area import MangaScrollArea
@@ -34,10 +36,12 @@ class BrowserPage(Page):
 
         self.setup()
 
+    @catch_exception
     def setup(self):
         self.setup_ui()
         self.open_catalog(self.request, self.page)
 
+    @catch_exception
     def setup_ui(self):
         self.search_button.clicked.connect(lambda: self.open_catalog(self.search_bar.text(), 1))
         self.search_bar.returnPressed.connect(lambda: self.open_catalog(self.search_bar.text(), 1))
@@ -48,21 +52,24 @@ class BrowserPage(Page):
         self.ui.previousPageButton.clicked.connect(
             lambda: self.get_content(self.request, self.pages_list.currentIndex()))
 
+    @catch_exception
     def open_catalog(self, request, page):
         self.get_content(request, page)
         self.set_pages_list()
 
+    @catch_exception
     def get_content(self, request: str, page: int):
         self.request = request
         if not (1 <= page <= len(self.pages_list)):
             return
         self.change_page(page)
-        worker = Worker(lambda: self.scrapper.get_content(request, page))
         mangas = []
+        worker = Worker(lambda: self.scrapper.get_content(request, page))
         worker.signals.result.connect(lambda x: mangas.extend(x))
         worker.signals.finished.connect(lambda: self.add_content(mangas))
         self.threadpool.start(worker)
 
+    @catch_exception
     def change_page(self, page):
         if page > self.pages_list.currentIndex()+1:
             self.pages_list.setCurrentIndex(page-1)
@@ -70,6 +77,7 @@ class BrowserPage(Page):
             self.pages_list.setCurrentIndex(page-1)
         self.page = page
 
+    @catch_exception
     def add_content(self, mangas: list[Manga]):
         self.manga_scroll_area.delete_content()
         manga_list = []
@@ -81,11 +89,8 @@ class BrowserPage(Page):
         self.manga_scroll_area.add_content(manga_list)
         self.manga_scroll_area.update_content()
 
+    @catch_exception
     def set_pages_list(self):
         self.pages_list.clear()
         for i in range(1, self.scrapper.get_catalog_pages()+1):
             self.pages_list.addItem(str(i))
-
-
-
-

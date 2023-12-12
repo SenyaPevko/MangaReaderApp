@@ -66,6 +66,11 @@ class Manganelo(Scrapper):
             print(e)
         return 1
 
+    def get_mangas_names(self, request, page):
+        cards = self.get_search_content(request, page)
+        for card in cards:
+            yield card.find_next("a")["title"]
+
     def scrape_manga(self, manga: Manga):
         source = requests.get(manga.url).text
         soup = BeautifulSoup(source, "lxml")

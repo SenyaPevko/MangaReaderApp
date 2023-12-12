@@ -50,13 +50,20 @@ class Window(QMainWindow):
         self.history_page = history.HistoryPage()
         self.browser_page = browser.BrowserPage()
         self.settings_page = settings.SettingsPage()
-        self.browser_page.manga_open.connect(lambda manga: self.open_info(manga, self.browser_page))
-        self.library_page.manga_open.connect(lambda manga: self.open_info(manga, self.library_page))
-        self.history_page.open_manga.connect(lambda manga: self.open_info(manga, self.history_page))
-        self.history_page.open_reader.connect(lambda args: self.open_reader(args[0], args[1], args[2], self.history_page))
+
         self.pages_widget = self.ui.stackedWidget
         self.pages_widget.addWidget(self.library_page)
         self.page = self.pages_widget.currentWidget()
+
+        self.setup_connections()
+
+    def setup_connections(self):
+        self.browser_page.manga_open.connect(lambda manga: self.open_info(manga, self.browser_page))
+        self.library_page.manga_open.connect(lambda manga: self.open_info(manga, self.library_page))
+        self.history_page.open_manga.connect(lambda manga: self.open_info(manga, self.history_page))
+        self.history_page.open_reader.connect(
+            lambda args: self.open_reader(args[0], args[1], args[2], self.history_page))
+
         self.ui.browserButton.clicked.connect(lambda: self.change_page(self.browser_page))
         self.ui.historyButton.clicked.connect(lambda: self.change_page(self.history_page))
         self.ui.updateButton.clicked.connect(lambda: self.change_page(self.update_page))
@@ -65,7 +72,10 @@ class Window(QMainWindow):
 
     @pyqtSlot(Page)
     def change_page(self, page: Page):
-        if self.pages_widget.currentWidget() != page:
+        current_widget = self.pages_widget.currentWidget()
+        if current_widget != page:
+            if isinstance(current_widget, WindowWidget):
+                self.delete_widget(current_widget)
             self.pages_widget.removeWidget(self.pages_widget.currentWidget())
             page.update()
             self.pages_widget.addWidget(page)
@@ -75,22 +85,21 @@ class Window(QMainWindow):
     @pyqtSlot(WindowWidget)
     def open_widget(self, widget: WindowWidget):
         self.pages_widget.setEnabled(False)
+        widget.setup_done.connect(lambda: self.set_widget(widget))
+        widget.setup_error.connect(lambda: self.delete_widget(widget))
+        widget.exit_page.connect(lambda: self.delete_widget(widget))
 
-        @pyqtSlot()
-        def set_widget():
-            self.pages_widget.addWidget(widget)
-            self.pages_widget.setCurrentWidget(widget)
-            self.pages_widget.setEnabled(True)
+    @pyqtSlot()
+    def set_widget(self, widget: WindowWidget):
+        self.pages_widget.addWidget(widget)
+        self.pages_widget.setCurrentWidget(widget)
+        self.pages_widget.setEnabled(True)
 
-        @pyqtSlot()
-        def delete_widget():
-            widget.deleteLater()
-            widget.parent.update()
-            self.pages_widget.setEnabled(True)
-
-        widget.setup_done.connect(set_widget)
-        widget.setup_error.connect(delete_widget)
-        widget.exit_page.connect(delete_widget)
+    @pyqtSlot()
+    def delete_widget(self, widget: WindowWidget):
+        widget.deleteLater()
+        widget.parent.update()
+        self.pages_widget.setEnabled(True)
 
     @pyqtSlot(Manga)
     def open_info(self, manga: Manga, parent):
@@ -98,7 +107,6 @@ class Window(QMainWindow):
         self.open_widget(info)
         info.open_reader.connect(lambda: self.open_reader(info.manga, info.chapters, info.get_clicked_chapter_index(),
                                                           info))
-
     @pyqtSlot()
     def open_reader(self, manga: Manga, chapters: list[Chapter], chapter_index, parent):
         reader = Reader(manga, chapters, chapter_index, parent)

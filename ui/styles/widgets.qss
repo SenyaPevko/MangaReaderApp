@@ -25,6 +25,15 @@ QWidget#manga_widget[is_set="1"] QFrame
     background-color: #E8E7EB;
 }
 
+QWidget#historyWidget[is_set="0"] QFrame
+{
+    background-color: #FCFBFF;
+}
+QWidget#historyWidget[is_set="1"] QFrame
+{
+    background-color: #E8E7EB;
+}
+
 
 QStackedWidget QFrame
 {

@@ -1,39 +1,37 @@
 from functools import wraps
 from typing import Callable
 
-def singleton(cls):
-    """
-    A decorator that transforms a class into a singleton.
 
-    Parameters:
-        cls (type): The class to be transformed.
-
-    Returns:
-        callable: Wrapped class as a singleton.
-    """
+def singleton(class_):
     instance = [None]
 
-    @wraps(cls)
+    @wraps(class_)
     def wrapper(*args, **kwargs):
         if instance[0] is None:
-            instance[0] = cls(*args, **kwargs)
+            instance[0] = class_(*args, **kwargs)
         return instance[0]
+
     return wrapper
+
+
 def with_lock_thread(locker):
-    """
-    A decorator that acquires a lock before executing a function in a threaded environment.
-
-    Parameters:
-        locker (threading.Lock): The lock object to acquire.
-
-    Returns:
-        callable: Decorator that acquires the lock before executing wrapped function.
-    """
     def decorator(func: Callable):
-
         @wraps(func)
         def wrapper(*args, **kwargs):
             with locker:
                 return func(*args, **kwargs)
+
         return wrapper
+
     return decorator
+
+
+def catch_exception(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            print(e)
+
+    return wrapper

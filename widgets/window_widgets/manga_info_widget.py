@@ -6,6 +6,7 @@ from Enums.BookMark import BookMark
 from Enums.Libs import Libs
 from models.manga import Manga
 from utils.database import Database
+from utils.decorators import catch_exception
 from utils.scrapper_manager import get_scrapper
 from ui.widgets.manga_info_widget_ui import Ui_Form
 from utils.file_manager import FileManager
@@ -13,19 +14,18 @@ from utils.threads import Worker, ThreadPool
 from widgets.window_widgets.window_widget import WindowWidget
 from enum import Enum
 
+
 class MangaInfoWidget(WindowWidget):
     def __init__(self, manga: Manga, parent):
         super().__init__(parent)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.manga = manga
-        self.threadpool = QThreadPool()
         self.chapters = None
         self.chapters_list = self.ui.chaptersList
-        self.scrapper = None
-        self.db = Database()
         self.setup()
 
+    @catch_exception
     def setup(self):
         def scrape_manga():
             self.scrapper = get_scrapper(self.manga.scrapper)()
@@ -37,6 +37,7 @@ class MangaInfoWidget(WindowWidget):
         worker.signals.result.connect(self.set_info)
         self.threadpool.start(worker)
 
+    @catch_exception
     def setup_ui(self):
         self.ui.exitButton.clicked.connect(self.close_widget)
         self.ui.bookMarkButton.clicked.connect(
@@ -44,6 +45,7 @@ class MangaInfoWidget(WindowWidget):
         self.chapters_list.clicked.connect(self.open_reader)
         self.ui.librariesList.currentIndexChanged.connect(self.update_bookmark)
 
+    @catch_exception
     def set_info(self):
         self.ui.nameLabel.setText("Название: " + self.manga.name)
         self.ui.authorLabel.setText("Автор: " + self.manga.author)
@@ -58,6 +60,7 @@ class MangaInfoWidget(WindowWidget):
         self.set_bookmark()
         self.setup_done.emit()
 
+    @catch_exception
     def set_bookmark(self):
         manga = self.db.get_manga_by_id(self.manga.get_id())
         if manga is not None:
@@ -76,18 +79,23 @@ class MangaInfoWidget(WindowWidget):
             self.ui.bookMarkButton.setText(BookMark.Added.value)
             return
 
+    @catch_exception
     def update_bookmark(self):
         if self.ui.librariesList.currentText() != self.manga.lib:
             self.ui.bookMarkButton.setText(BookMark.Add.value)
         else:
             self.ui.bookMarkButton.setText(BookMark.Added.value)
 
+    @catch_exception
     def set_chapters(self):
+
+        @catch_exception
         def get_chapters():
             self.chapters_list.clear()
             self.chapters_list.horizontalScrollBar()
             self.chapters = self.scrapper.get_chapters(self.manga)
 
+        @catch_exception
         def setup_chapters():
             for chapter in self.chapters:
                 pages_data = self.db.get_chapter_history(chapter.get_id())
@@ -105,9 +113,10 @@ class MangaInfoWidget(WindowWidget):
 
         worker = Worker(get_chapters)
         worker.signals.error.connect(self.setup_error.emit)
-        worker.signals.result.connect(setup_chapters)
+        worker.signals.finished.connect(setup_chapters)
         self.threadpool.start(worker)
 
+    @catch_exception
     def set_preview_image(self):
         self.ui.image.clear()
         image_size = QSize(self.width() // 3, self.height() // 2)
@@ -139,6 +148,7 @@ class MangaInfoWidget(WindowWidget):
     def get_clicked_chapter_index(self):
         return self.chapters_list.indexFromItem(self.chapters_list.currentItem()).row()
 
+    @catch_exception
     def update(self):
         self.set_chapters()
 

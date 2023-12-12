@@ -7,6 +7,7 @@ from models.manga import Manga
 from models.manga_history import MangaHistory
 from ui.widgets.history_widget_ui import Ui_historyWidget
 from utils.database import Database
+from utils.decorators import catch_exception
 from utils.file_manager import FileManager
 from utils.scrapper_manager import get_scrapper
 from utils.threads import Worker, ThreadPool
@@ -36,6 +37,7 @@ class HistoryWidget(QWidget):
     def enterEvent(self, event):
         self.setProperty('is_set', 1)
         self.style().polish(self.ui.historyFrame)
+        self.style().polish(self.ui.textFrame)
         self.style().polish(self.ui.mangaHistoryLabel)
         self.style().polish(self.ui.mangaNameLabel)
         self.style().polish(self.ui.image)
@@ -43,15 +45,18 @@ class HistoryWidget(QWidget):
     def leaveEvent(self, event):
         self.setProperty('is_set', 0)
         self.style().polish(self.ui.historyFrame)
+        self.style().polish(self.ui.textFrame)
         self.style().polish(self.ui.mangaNameLabel)
         self.style().polish(self.ui.mangaHistoryLabel)
         self.style().polish(self.ui.image)
 
+    @catch_exception
     def setup(self):
         self.manga = self.db.get_manga_by_id(self.id)
         self.scrapper = get_scrapper(self.manga.scrapper)()
         self.setup_ui()
 
+    @catch_exception
     def setup_ui(self):
         self.ui.mangaNameLabel.setText(self.manga.name)
         self.ui.mangaHistoryLabel.setText(f"Глава - {self.chapter_name} "
@@ -62,10 +67,12 @@ class HistoryWidget(QWidget):
         self.ui.deleteButton.clicked.connect(lambda: self.delete_history.emit(self.id))
         self.update_image()
 
+    @catch_exception
     def get_image(self):
         path_to_save = self.file_manager.save_temp_preview(self.manga, {})
         self.manga_pixmap = QPixmap(path_to_save)
 
+    @catch_exception
     def set_image(self):
         self.ui.image.clear()
         image_size = QSize(self.width(), self.height() - 20)
@@ -73,11 +80,13 @@ class HistoryWidget(QWidget):
                                           Qt.TransformationMode.SmoothTransformation)
         self.ui.image.setPixmap(pixmap)
 
+    @catch_exception
     def update_image(self):
         worker = Worker(self.get_image)
         worker.signals.finished.connect(self.set_image)
         self.threadpool.start(worker)
 
+    @catch_exception
     def open_reader(self):
         self.clicked_chapter.emit([self.manga, self.scrapper.get_chapters(self.manga), self.chapter_number-1])
 

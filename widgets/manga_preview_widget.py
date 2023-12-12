@@ -4,6 +4,7 @@ from PyQt6.QtGui import QPixmap
 
 from models.manga import Manga
 from ui.widgets.manga_preview_widget_ui import Ui_manga_widget
+from utils.decorators import catch_exception
 from utils.file_manager import FileManager
 from utils.threads import Worker, ThreadPool
 
@@ -38,6 +39,7 @@ class MangaWidget(QWidget):
                 self.manga_clicked.emit(self.manga)
         event.accept()
 
+    @catch_exception
     def set_size(self, size: int):
         max_size = QSize(size, int(size * 1.6))
         if self.size() != max_size:
@@ -46,15 +48,18 @@ class MangaWidget(QWidget):
         if self.manga_pixmap:
             self.set_image()
 
+    @catch_exception
     def get_image(self):
         path_to_save = self.file_manager.save_temp_preview(self.manga, {})
         self.manga_pixmap = QPixmap(path_to_save)
 
+    @catch_exception
     def set_image(self):
         pixmap = self.manga_pixmap.scaled(self.ui.image.maximumSize(), Qt.AspectRatioMode.KeepAspectRatio,
                                           Qt.TransformationMode.SmoothTransformation)
         self.ui.image.setPixmap(pixmap)
 
+    @catch_exception
     def update_image(self):
         worker = Worker(self.get_image)
         worker.signals.finished.connect(self.set_image)

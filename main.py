@@ -8,12 +8,12 @@ from models.manga import Manga
 from pages.page import Page
 from ui.windows.main_window_ui import Ui_MainWindow
 from pages import browser, library, update, history, settings
-from widgets.window_widgets.manga_info_widget import MangaInfoWidget
-from widgets.window_widgets.reader import Reader
+from widgets.window_widgets.manga_window_widgets.manga_info_widget import MangaInfoWidget
+from widgets.window_widgets.manga_window_widgets.reader import Reader
 from widgets.window_widgets.window_widget import WindowWidget
 
 
-# pyuic6.exe .\browser.ui -o .\browser_ui.py
+# pyuic6.exe .\settings_widget_preview.ui -o .\settings_widget_preview_ui.py
 
 class App(QApplication):
     def __init__(self, argv):
@@ -70,12 +70,15 @@ class Window(QMainWindow):
         self.ui.libraryButton.clicked.connect(lambda: self.change_page(self.library_page))
         self.ui.settingsButton.clicked.connect(lambda: self.change_page(self.settings_page))
 
+        self.settings_page.widget_clicked.connect(self.set_widget)
+
     @pyqtSlot(Page)
     def change_page(self, page: Page):
         current_widget = self.pages_widget.currentWidget()
         if current_widget != page:
             if isinstance(current_widget, WindowWidget):
                 self.delete_widget(current_widget)
+                current_widget.close_widget()
             self.pages_widget.removeWidget(self.pages_widget.currentWidget())
             page.update()
             self.pages_widget.addWidget(page)
@@ -89,13 +92,13 @@ class Window(QMainWindow):
         widget.setup_error.connect(lambda: self.delete_widget(widget))
         widget.exit_page.connect(lambda: self.delete_widget(widget))
 
-    @pyqtSlot()
+    @pyqtSlot(WindowWidget)
     def set_widget(self, widget: WindowWidget):
         self.pages_widget.addWidget(widget)
         self.pages_widget.setCurrentWidget(widget)
         self.pages_widget.setEnabled(True)
 
-    @pyqtSlot()
+    @pyqtSlot(WindowWidget)
     def delete_widget(self, widget: WindowWidget):
         widget.deleteLater()
         widget.parent.update()

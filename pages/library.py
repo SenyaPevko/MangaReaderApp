@@ -1,4 +1,4 @@
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtCore import pyqtSignal, pyqtSlot
 
 from Enums.Libs import Libs
 from models.manga import Manga
@@ -43,7 +43,7 @@ class LibraryPage(Page):
         self.lib_menu.addItem(Libs.Planning.value)
         self.lib_menu.addItem(Libs.Dropped.value)
 
-    @catch_exception
+    @pyqtSlot()
     def show_current_lib(self):
         self.manga_scroll_area.delete_content()
         manga_list = []
@@ -54,7 +54,7 @@ class LibraryPage(Page):
         self.manga_scroll_area.add_content(manga_list)
         self.manga_scroll_area.update_content()
 
-    @catch_exception
+    @pyqtSlot()
     def search(self, request):
         self.manga_scroll_area.delete_content()
         manga_list = []

@@ -1,4 +1,4 @@
-from PyQt6.QtCore import Qt, QSize, QThreadPool
+from PyQt6.QtCore import Qt, QSize, QThreadPool, pyqtSlot
 from PyQt6.QtGui import QPixmap
 
 from models.chapter import Chapter
@@ -10,10 +10,11 @@ from utils.decorators import catch_exception
 from utils.file_manager import FileManager
 from utils.scrapper_manager import get_scrapper
 from utils.threads import Worker, ThreadPool
+from widgets.window_widgets.manga_window_widgets.manga_window_widget import MangaWindowWidget
 from widgets.window_widgets.window_widget import WindowWidget
 
 
-class Reader(WindowWidget):
+class Reader(MangaWindowWidget):
     def __init__(self, manga: Manga, chapters: list[Chapter], current_chapter_index, parent):
         super().__init__(parent)
         self.ui = Ui_Form()
@@ -42,15 +43,15 @@ class Reader(WindowWidget):
         self.ui.nextPageButton.clicked.connect(self.turn_next_page)
         self.ui.previousPageButton.clicked.connect(self.turn_previous_page)
         self.ui.chaptersList.currentIndexChanged.connect(self.change_chapter)
-        self.ui.exitButton.clicked.connect(self.exit_widget)
+        self.ui.exitButton.clicked.connect(self.close_widget)
 
-    @catch_exception
-    def exit_widget(self):
+    @pyqtSlot()
+    def close_widget(self):
         self.save_chapter()
         self.save_manga_history()
         self.exit_page.emit()
 
-    @catch_exception
+    @pyqtSlot()
     def change_chapter(self):
         if self.current_chapter_index == self.ui.chaptersList.currentIndex():
             return
@@ -72,7 +73,7 @@ class Reader(WindowWidget):
                                                self.current_chapter_index+1,
                                                self.current_page_number))
 
-    @catch_exception
+    @pyqtSlot()
     def turn_next_page(self):
         if self.current_page_number == len(self.pages):
             self.turn_next_chapter()
@@ -80,7 +81,7 @@ class Reader(WindowWidget):
             self.current_page_number += 1
             self.setup_page()
 
-    @catch_exception
+    @pyqtSlot()
     def turn_previous_page(self):
         if self.current_page_number == 1:
             self.turn_previous_chapter()
@@ -181,7 +182,6 @@ class Reader(WindowWidget):
     def get_content(self):
         self.pages = self.scrapper.get_chapter_pages(self.chapters[self.current_chapter_index])
 
-    @catch_exception
     def resizeEvent(self, arg__1):
         super().resizeEvent(arg__1)
         if (self.page_pixmap is None) or (arg__1.oldSize() == arg__1.size()):

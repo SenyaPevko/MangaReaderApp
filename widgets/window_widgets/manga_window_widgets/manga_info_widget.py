@@ -11,11 +11,12 @@ from utils.scrapper_manager import get_scrapper
 from ui.widgets.manga_info_widget_ui import Ui_Form
 from utils.file_manager import FileManager
 from utils.threads import Worker, ThreadPool
+from widgets.window_widgets.manga_window_widgets.manga_window_widget import MangaWindowWidget
 from widgets.window_widgets.window_widget import WindowWidget
 from enum import Enum
 
 
-class MangaInfoWidget(WindowWidget):
+class MangaInfoWidget(MangaWindowWidget):
     def __init__(self, manga: Manga, parent):
         super().__init__(parent)
         self.ui = Ui_Form()
@@ -34,7 +35,7 @@ class MangaInfoWidget(WindowWidget):
         self.setup_ui()
         worker = Worker(scrape_manga)
         worker.signals.error.connect(self.setup_error.emit)
-        worker.signals.result.connect(self.set_info)
+        worker.signals.finished.connect(self.set_info)
         self.threadpool.start(worker)
 
     @catch_exception
@@ -45,7 +46,7 @@ class MangaInfoWidget(WindowWidget):
         self.chapters_list.clicked.connect(self.open_reader)
         self.ui.librariesList.currentIndexChanged.connect(self.update_bookmark)
 
-    @catch_exception
+    @pyqtSlot()
     def set_info(self):
         self.ui.nameLabel.setText("Название: " + self.manga.name)
         self.ui.authorLabel.setText("Автор: " + self.manga.author)
@@ -79,7 +80,7 @@ class MangaInfoWidget(WindowWidget):
             self.ui.bookMarkButton.setText(BookMark.Added.value)
             return
 
-    @catch_exception
+    @pyqtSlot()
     def update_bookmark(self):
         if self.ui.librariesList.currentText() != self.manga.lib:
             self.ui.bookMarkButton.setText(BookMark.Add.value)

@@ -18,6 +18,7 @@ class MangaWidget(QWidget):
         self.manga_pixmap = None
         self.ui.name.setText(self.manga.name)
         self.threadpool = QThreadPool()
+        self.file_manager = FileManager()
 
     def enterEvent(self, event):
         self.setProperty('is_set', 1)
@@ -46,7 +47,7 @@ class MangaWidget(QWidget):
             self.set_image()
 
     def get_image(self):
-        path_to_save = FileManager.save_temp_preview(self.manga, {})
+        path_to_save = self.file_manager.save_temp_preview(self.manga, {})
         self.manga_pixmap = QPixmap(path_to_save)
 
     def set_image(self):

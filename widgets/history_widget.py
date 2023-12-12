@@ -30,6 +30,7 @@ class HistoryWidget(QWidget):
         self.scrapper = None
         self.db = Database()
         self.id = manga_history.id
+        self.file_manager = FileManager()
         self.setup()
 
     def enterEvent(self, event):
@@ -62,7 +63,7 @@ class HistoryWidget(QWidget):
         self.update_image()
 
     def get_image(self):
-        path_to_save = FileManager.save_temp_preview(self.manga, {})
+        path_to_save = self.file_manager.save_temp_preview(self.manga, {})
         self.manga_pixmap = QPixmap(path_to_save)
 
     def set_image(self):

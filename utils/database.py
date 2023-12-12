@@ -13,26 +13,15 @@ class Database(object):
     DIR_PATH = rf"{os.getcwd()}\MangaReaderAppTemp"
     FILE_NAME = r"\db.db"
     lock = Lock()
+
     def __init__(self):
-        FileManager.create_directory(self.DIR_PATH)
+        self.file_manager = FileManager()
+        self.file_manager.create_directory(self.DIR_PATH)
         self.path = self.DIR_PATH + self.FILE_NAME
-        FileManager.save_file(self.path, None)
+        self.file_manager.save_file(self.path, None)
         self.connection = sqlite3.connect(self.path)
         self.cursor = self.connection.cursor()
-        self.cursor.execute(
-            """CREATE TABLE IF NOT EXISTS Mangas (id STRING PRIMARY KEY ON CONFLICT REPLACE NOT NULL,
-        name STRING, description TEXT, status STRING, chapters INTEGER, url STRING, image STRING, 
-        author STRING, scrapper STRING, genres STRING, library STRING);""")
-
-        self.cursor.execute("CREATE INDEX IF NOT EXISTS library_name ON Mangas (library)")
-
-        self.cursor.execute(
-            """CREATE TABLE IF NOT EXISTS ChaptersHistory (id STRING PRIMARY KEY ON CONFLICT REPLACE NOT NULL,
-        page_left_on INTEGER, max_pages INTEGER);""")
-
-        self.cursor.execute(
-            """CREATE TABLE IF NOT EXISTS MangasHistory (id STRING PRIMARY KEY ON CONFLICT REPLACE NOT NULL, 
-            chapter_name STRING, chapter_number INTEGER, page INTEGER);""")
+        self.setup_tabels()
 
     @with_lock_thread(lock)
     def add_manga(self, manga: Manga):
@@ -118,4 +107,22 @@ class Database(object):
     @with_lock_thread(lock)
     def remove_manga_history_id(self, manga_history_id):
         self.cursor.execute(f"DELETE FROM MangasHistory WHERE id = '{manga_history_id}'")
+        self.connection.commit()
+
+    @with_lock_thread(lock)
+    def setup_tabels(self):
+        self.cursor.execute(
+            """CREATE TABLE IF NOT EXISTS Mangas (id STRING PRIMARY KEY ON CONFLICT REPLACE NOT NULL,
+        name STRING, description TEXT, status STRING, chapters INTEGER, url STRING, image STRING, 
+        author STRING, scrapper STRING, genres STRING, library STRING);""")
+
+        self.cursor.execute("CREATE INDEX IF NOT EXISTS library_name ON Mangas (library)")
+
+        self.cursor.execute(
+            """CREATE TABLE IF NOT EXISTS ChaptersHistory (id STRING PRIMARY KEY ON CONFLICT REPLACE NOT NULL,
+        page_left_on INTEGER, max_pages INTEGER);""")
+
+        self.cursor.execute(
+            """CREATE TABLE IF NOT EXISTS MangasHistory (id STRING PRIMARY KEY ON CONFLICT REPLACE NOT NULL, 
+            chapter_name STRING, chapter_number INTEGER, page INTEGER);""")
         self.connection.commit()

@@ -27,6 +27,7 @@ class Reader(WindowWidget):
         self.images_area = self.ui.imagesScrollArea
         self.page_pixmap = None
         self.threadpool = QThreadPool()
+        self.file_manager = FileManager()
         self.setup()
 
     def setup(self):
@@ -125,7 +126,7 @@ class Reader(WindowWidget):
         self.threadpool.start(worker)
 
     def get_image(self):
-        path_to_save = FileManager.save_temp_page(self.chapters[self.current_chapter_index],
+        path_to_save = self.file_manager.save_temp_page(self.chapters[self.current_chapter_index],
                                                   self.pages[self.current_page_number - 1],
                                                   self.scrapper.get_user_agent())
         self.page_pixmap = QPixmap(path_to_save)

@@ -8,7 +8,6 @@ from models.manga import Manga
 from pages.page import Page
 from ui.windows.main_window_ui import Ui_MainWindow
 from pages import browser, library, update, history, settings
-from utils.file_manager import FileManager
 from widgets.window_widgets.manga_info_widget import MangaInfoWidget
 from widgets.window_widgets.reader import Reader
 from widgets.window_widgets.window_widget import WindowWidget
@@ -111,7 +110,6 @@ def main():
     app = App(sys.argv)
     with open("ui/styles/widgets.qss", "r") as f:
         app.setStyleSheet(f.read())
-    FileManager.initialize_directories()
     window = Window()
     window.show()
     sys.exit(app.exec())

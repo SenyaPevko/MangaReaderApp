@@ -18,29 +18,31 @@ class MangaInfoWidget(WindowWidget):
         super().__init__(parent)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
-        self.ui.exitButton.clicked.connect(self.close_widget)
         self.manga = manga
         self.threadpool = QThreadPool()
         self.chapters = None
         self.chapters_list = self.ui.chaptersList
         self.scrapper = None
         self.db = Database()
-        self.ui.bookMarkButton.clicked.connect(
-            lambda: self.add_manga_to_lib(self.ui.librariesList.currentText()))
-        self.chapters_list.clicked.connect(self.open_reader)
-        self.ui.librariesList.currentIndexChanged.connect(self.update_bookmark)
         self.setup()
 
     def setup(self):
-
         def scrape_manga():
             self.scrapper = get_scrapper(self.manga.scrapper)()
             self.manga = self.scrapper.scrape_manga(self.manga)
 
+        self.setup_ui()
         worker = Worker(scrape_manga)
         worker.signals.error.connect(self.setup_error.emit)
         worker.signals.result.connect(self.set_info)
         self.threadpool.start(worker)
+
+    def setup_ui(self):
+        self.ui.exitButton.clicked.connect(self.close_widget)
+        self.ui.bookMarkButton.clicked.connect(
+            lambda: self.add_manga_to_lib(self.ui.librariesList.currentText()))
+        self.chapters_list.clicked.connect(self.open_reader)
+        self.ui.librariesList.currentIndexChanged.connect(self.update_bookmark)
 
     def set_info(self):
         self.ui.nameLabel.setText("Название: " + self.manga.name)
@@ -49,6 +51,7 @@ class MangaInfoWidget(WindowWidget):
         self.ui.descriptionBrowser.setText(self.manga.description)
         self.ui.chaptersLabel.setText("Глав: " + str(self.manga.chapters))
         self.ui.genresLabel.setText("Жанры: " + self.manga.genres)
+        self.file_manager = FileManager()
         self.set_preview_image()
         self.set_chapters()
         self.set_libs_list()
@@ -108,7 +111,7 @@ class MangaInfoWidget(WindowWidget):
     def set_preview_image(self):
         self.ui.image.clear()
         image_size = QSize(self.width() // 3, self.height() // 2)
-        image_path = FileManager.get_temp_preview(self.manga)
+        image_path = self.file_manager.get_temp_preview(self.manga)
         manga_pixmap = QPixmap(image_path)
         pixmap = manga_pixmap.scaled(image_size, Qt.AspectRatioMode.KeepAspectRatio,
                                           Qt.TransformationMode.SmoothTransformation)

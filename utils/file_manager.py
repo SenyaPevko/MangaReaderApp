@@ -2,6 +2,7 @@ import platformdirs
 import re
 import os
 import shutil
+from pathlib import Path
 
 import requests
 
@@ -79,10 +80,28 @@ class FileManager:
         if not os.path.isdir(path):
             os.makedirs(path, exist_ok=True)
 
-    def clear_temp(self):
-        for file in os.listdir(self.TEMP_PATH):
-            path = os.path.join(self.TEMP_PATH, file)
+    def clear_directory(self, path_to_clear):
+        for file in os.listdir(path_to_clear):
+            path = os.path.join(path_to_clear, file)
             try:
                 shutil.rmtree(path)
             except OSError:
                 os.remove(file)
+
+    def clear_temp(self):
+        self.clear_directory(self.TEMP_CHAPTERS)
+        self.clear_directory(self.TEMP_PREVIEWS)
+
+    def get_temp_size(self):
+        temp_size = self.get_directory_size(self.TEMP_PATH)
+        return self.parse_file_size(temp_size)
+
+    def get_directory_size(self, path):
+        return sum(p.stat().st_size for p in Path(path).rglob('*'))
+
+    def parse_file_size(self, size):
+        for unit in ("B", "K", "M", "G", "T"):
+            if size < 1024:
+                break
+            size /= 1024
+        return f"{size:.1f}{unit}"

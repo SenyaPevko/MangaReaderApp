@@ -1,14 +1,15 @@
-from utils import app_info
 from utils.decorators import catch_exception
+from utils.file_manager import FileManager
 from widgets.settings_preview_widgets.settings_preview_widget import SettingsPreviewWidget
 
 
-class AboutAppWidgetPreview(SettingsPreviewWidget):
+class CachePreviewWidget(SettingsPreviewWidget):
 
     def __init__(self):
         super().__init__()
 
-        self.icon_path = r"\about_app.svg"
+        self.icon_path = r"\cache.svg"
+        self.file_manager = FileManager()
 
         self.setup()
 
@@ -18,7 +19,8 @@ class AboutAppWidgetPreview(SettingsPreviewWidget):
 
     @catch_exception
     def setup_ui(self):
-        self.ui.titleLabel.setText("О приложении")
-        self.ui.descriptionLabel.setText(f"Версия: {app_info.APP_VERSION}")
+        self.ui.titleLabel.setText("Кэш приложения")
+        temp_size = self.file_manager.get_temp_size()
+        self.ui.descriptionLabel.setText(f"Занимаемая память: {temp_size}")
         self.setProperty('is_set', 0)
         self.set_icon(self.icon_path)

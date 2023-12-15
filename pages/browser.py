@@ -1,3 +1,5 @@
+import os
+
 from PyQt6.QtCore import QThreadPool, pyqtSignal
 from PyQt6.QtWidgets import QCompleter
 
@@ -14,6 +16,8 @@ from widgets.manga_preview_widget import MangaWidget
 
 class BrowserPage(Page):
     manga_open = pyqtSignal(Manga)
+    closed_icon_path = rf"{os.getcwd()}\icons\side_menu\browse_closed.svg"
+    selected_icon_path = rf"{os.getcwd()}\icons\side_menu\browse_selected.svg"
 
     def __init__(self):
         super().__init__()

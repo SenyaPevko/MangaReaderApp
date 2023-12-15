@@ -1,3 +1,5 @@
+import os
+
 from PyQt6 import QtCore
 from PyQt6.QtCore import Qt, pyqtSignal
 from models.manga import Manga
@@ -12,6 +14,8 @@ from widgets.history_widget import HistoryWidget
 class HistoryPage(Page):
     open_manga = pyqtSignal(Manga)
     open_reader = pyqtSignal(list)
+    closed_icon_path = rf"{os.getcwd()}\icons\side_menu\history_closed.svg"
+    selected_icon_path = rf"{os.getcwd()}\icons\side_menu\history_selected.svg"
 
     def __init__(self):
         super().__init__()

@@ -162,12 +162,12 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="deleteButton">
+       <widget class="QLabel" name="deleteButton">
         <property name="cursor">
-         <cursorShape>OpenHandCursor</cursorShape>
+         <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="text">
-         <string>Удалить</string>
+         <string>TextLabel</string>
         </property>
        </widget>
       </item>

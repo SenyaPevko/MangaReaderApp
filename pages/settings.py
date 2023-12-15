@@ -1,3 +1,5 @@
+import os
+
 from PyQt6 import QtCore
 from PyQt6.QtCore import pyqtSignal
 
@@ -13,6 +15,8 @@ from widgets.window_widgets.window_widget import WindowWidget
 
 class SettingsPage(Page):
     widget_clicked = pyqtSignal(WindowWidget)
+    closed_icon_path = rf"{os.getcwd()}\icons\side_menu\settings_closed.svg"
+    selected_icon_path = rf"{os.getcwd()}\icons\side_menu\settings_selected.svg"
 
     def __init__(self):
         super().__init__()

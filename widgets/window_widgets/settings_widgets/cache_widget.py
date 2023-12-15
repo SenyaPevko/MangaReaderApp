@@ -14,7 +14,8 @@ class CacheWidget(WindowWidget):
 
         self.file_manager = FileManager()
 
-        text = f"В кэше хранятся изображения которые раньше открывались"
+        temp_size = self.file_manager.get_temp_size()
+        text = f"В кэше хранятся изображения которые раньше открывались\nЗанимаемая память: {temp_size}"
         label = QLabel(text)
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         font = QFont()

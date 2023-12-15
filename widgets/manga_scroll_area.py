@@ -9,7 +9,7 @@ class MangaScrollArea(QScrollArea):
     def __init__(self, parent):
         super().__init__()
         self.setWidgetResizable(True)
-        self.column_count = 6
+        self.column_count = 7
         self.manga_list = []
 
         self.scroll_area_content = QWidget()

@@ -1,3 +1,5 @@
+import os
+
 from PyQt6.QtCore import pyqtSignal, pyqtSlot
 
 from Enums.Libs import Libs
@@ -12,6 +14,8 @@ from widgets.manga_scroll_area import MangaScrollArea
 
 class LibraryPage(Page):
     manga_open = pyqtSignal(Manga)
+    closed_icon_path = rf"{os.getcwd()}\icons\side_menu\lib_closed.svg"
+    selected_icon_path = rf"{os.getcwd()}\icons\side_menu\lib_selected.svg"
 
     def __init__(self):
         super().__init__()

@@ -153,3 +153,6 @@ class MangaInfoWidget(MangaWindowWidget):
     def update(self):
         self.set_chapters()
 
+    def resizeEvent(self, event):
+        self.set_preview_image()
+

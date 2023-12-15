@@ -1,3 +1,5 @@
+import os
+
 from PyQt6.QtCore import pyqtSignal, Qt, QThreadPool, QSize
 from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtWidgets import QWidget
@@ -11,6 +13,7 @@ from utils.decorators import catch_exception
 from utils.file_manager import FileManager
 from utils.scrapper_manager import get_scrapper
 from utils.threads import Worker, ThreadPool
+from utils.ui import set_icon
 
 
 class HistoryWidget(QWidget):
@@ -32,6 +35,9 @@ class HistoryWidget(QWidget):
         self.db = Database()
         self.id = manga_history.id
         self.file_manager = FileManager()
+        self.icon_path = rf"{os.getcwd()}\icons\delete.svg"
+        self.icon_pixmap = None
+        self.icon_max_size = QSize(25, 25)
         self.setup()
 
     def enterEvent(self, event):
@@ -41,6 +47,7 @@ class HistoryWidget(QWidget):
         self.style().polish(self.ui.mangaHistoryLabel)
         self.style().polish(self.ui.mangaNameLabel)
         self.style().polish(self.ui.image)
+        self.style().polish(self.ui.deleteButton)
 
     def leaveEvent(self, event):
         self.setProperty('is_set', 0)
@@ -49,6 +56,7 @@ class HistoryWidget(QWidget):
         self.style().polish(self.ui.mangaNameLabel)
         self.style().polish(self.ui.mangaHistoryLabel)
         self.style().polish(self.ui.image)
+        self.style().polish(self.ui.deleteButton)
 
     @catch_exception
     def setup(self):
@@ -65,6 +73,7 @@ class HistoryWidget(QWidget):
         self.ui.mangaNameLabel.clicked.connect(self.open_reader)
         self.ui.mangaHistoryLabel.clicked.connect(self.open_reader)
         self.ui.deleteButton.clicked.connect(lambda: self.delete_history.emit(self.id))
+        set_icon(self.icon_path, self.ui.deleteButton, self.icon_max_size)
         self.update_image()
 
     @catch_exception

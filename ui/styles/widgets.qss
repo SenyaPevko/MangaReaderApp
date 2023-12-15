@@ -29,6 +29,11 @@ QWidget#settingsWidget[is_set="1"] QFrame
     background-color: #E8E7EB;
 }
 
+QWidget#sideMenuWidget QFrame
+{
+    background-color: #FCFBFF;
+}
+
 
 QStackedWidget QFrame
 {

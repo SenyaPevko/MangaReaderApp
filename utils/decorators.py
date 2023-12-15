@@ -14,7 +14,7 @@ def singleton(class_):
     return wrapper
 
 
-def with_lock_thread(locker):
+def lock_thread(locker):
     def decorator(func: Callable):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -26,7 +26,7 @@ def with_lock_thread(locker):
     return decorator
 
 
-def catch_exception(func):
+def catch_exception(func: Callable):
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:

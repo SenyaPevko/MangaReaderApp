@@ -6,6 +6,7 @@ from models.manga import Manga
 from models.manga_history import MangaHistory
 from pages.page import Page
 from ui.pages.history_ui import Ui_Form
+from utils.app_info import ICONS_PATH
 from utils.database import Database
 from utils.decorators import catch_exception
 from widgets.history_widget import HistoryWidget
@@ -14,8 +15,8 @@ from widgets.history_widget import HistoryWidget
 class HistoryPage(Page):
     open_manga = pyqtSignal(Manga)
     open_reader = pyqtSignal(list)
-    closed_icon_path = rf"{os.getcwd()}\icons\side_menu\history_closed.svg"
-    selected_icon_path = rf"{os.getcwd()}\icons\side_menu\history_selected.svg"
+    closed_icon_path = rf"{ICONS_PATH}\side_menu\history_closed.svg"
+    selected_icon_path = rf"{ICONS_PATH}\side_menu\history_selected.svg"
 
     def __init__(self):
         super().__init__()

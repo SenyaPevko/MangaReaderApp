@@ -4,3 +4,5 @@ MangaReaderAppTemp/
 *.pyc
 *.db
 *.jpg
+*.py[cod]
+*$py.class

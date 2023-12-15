@@ -5,11 +5,12 @@ from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
 
 from pages.page import Page
+from utils.app_info import ICONS_PATH
 
 
 class UpdatePage(Page):
-    closed_icon_path = rf"{os.getcwd()}\icons\side_menu\update_closed.svg"
-    selected_icon_path = rf"{os.getcwd()}\icons\side_menu\update_selected.svg"
+    closed_icon_path = rf"{ICONS_PATH}\side_menu\update_closed.svg"
+    selected_icon_path = rf"{ICONS_PATH}\side_menu\update_selected.svg"
 
     def __init__(self):
         super().__init__()

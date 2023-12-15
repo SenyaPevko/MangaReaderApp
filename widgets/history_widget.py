@@ -8,11 +8,12 @@ from models.chapter import Chapter
 from models.manga import Manga
 from models.manga_history import MangaHistory
 from ui.widgets.history_widget_ui import Ui_historyWidget
+from utils.app_info import ICONS_PATH
 from utils.database import Database
 from utils.decorators import catch_exception
 from utils.file_manager import FileManager
 from utils.scrapper_manager import get_scrapper
-from utils.threads import Worker, ThreadPool
+from utils.threads import Worker
 from utils.ui import set_icon
 
 
@@ -35,7 +36,7 @@ class HistoryWidget(QWidget):
         self.db = Database()
         self.id = manga_history.id
         self.file_manager = FileManager()
-        self.icon_path = rf"{os.getcwd()}\icons\delete.svg"
+        self.icon_path = rf"{ICONS_PATH}\delete.svg"
         self.icon_pixmap = None
         self.icon_max_size = QSize(25, 25)
         self.setup()

@@ -1,11 +1,11 @@
 import os
 
 from PyQt6.QtCore import QThreadPool, pyqtSignal
-from PyQt6.QtWidgets import QCompleter
 
 from models.manga import Manga
 from pages.page import Page
 from ui.pages.browser_ui import Ui_Form
+from utils.app_info import ICONS_PATH
 from utils.decorators import catch_exception
 from utils.threads import Worker
 
@@ -16,8 +16,8 @@ from widgets.manga_preview_widget import MangaWidget
 
 class BrowserPage(Page):
     manga_open = pyqtSignal(Manga)
-    closed_icon_path = rf"{os.getcwd()}\icons\side_menu\browse_closed.svg"
-    selected_icon_path = rf"{os.getcwd()}\icons\side_menu\browse_selected.svg"
+    closed_icon_path = rf"{ICONS_PATH}\side_menu\browse_closed.svg"
+    selected_icon_path = rf"{ICONS_PATH}\side_menu\browse_selected.svg"
 
     def __init__(self):
         super().__init__()
@@ -50,9 +50,9 @@ class BrowserPage(Page):
         self.search_button.clicked.connect(lambda: self.open_catalog(self.search_bar.text(), 1))
         self.search_bar.returnPressed.connect(lambda: self.open_catalog(self.search_bar.text(), 1))
         self.pages_list.currentIndexChanged.connect(
-            lambda: self.get_content(self.request, self.pages_list.currentIndex()+1))
+            lambda: self.get_content(self.request, self.pages_list.currentIndex() + 1))
         self.ui.nextPageButton.clicked.connect(
-            lambda: self.get_content(self.request, self.pages_list.currentIndex()+2))
+            lambda: self.get_content(self.request, self.pages_list.currentIndex() + 2))
         self.ui.previousPageButton.clicked.connect(
             lambda: self.get_content(self.request, self.pages_list.currentIndex()))
 
@@ -75,10 +75,10 @@ class BrowserPage(Page):
 
     @catch_exception
     def change_page(self, page):
-        if page > self.pages_list.currentIndex()+1:
-            self.pages_list.setCurrentIndex(page-1)
+        if page > self.pages_list.currentIndex() + 1:
+            self.pages_list.setCurrentIndex(page - 1)
         elif page == self.pages_list.currentIndex():
-            self.pages_list.setCurrentIndex(page-1)
+            self.pages_list.setCurrentIndex(page - 1)
         self.page = page
 
     @catch_exception
@@ -96,5 +96,5 @@ class BrowserPage(Page):
     @catch_exception
     def set_pages_list(self):
         self.pages_list.clear()
-        for i in range(1, self.scrapper.get_catalog_pages()+1):
+        for i in range(1, self.scrapper.get_catalog_pages() + 1):
             self.pages_list.addItem(str(i))

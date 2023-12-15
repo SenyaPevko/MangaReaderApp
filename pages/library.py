@@ -6,6 +6,7 @@ from Enums.Libs import Libs
 from models.manga import Manga
 from pages.page import Page
 from ui.pages.library_ui import Ui_Form
+from utils.app_info import ICONS_PATH
 from utils.database import Database
 from utils.decorators import catch_exception
 from widgets.manga_preview_widget import MangaWidget
@@ -14,8 +15,8 @@ from widgets.manga_scroll_area import MangaScrollArea
 
 class LibraryPage(Page):
     manga_open = pyqtSignal(Manga)
-    closed_icon_path = rf"{os.getcwd()}\icons\side_menu\lib_closed.svg"
-    selected_icon_path = rf"{os.getcwd()}\icons\side_menu\lib_selected.svg"
+    closed_icon_path = rf"{ICONS_PATH}\side_menu\lib_closed.svg"
+    selected_icon_path = rf"{ICONS_PATH}\side_menu\lib_selected.svg"
 
     def __init__(self):
         super().__init__()

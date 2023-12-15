@@ -5,13 +5,10 @@ from models.chapter import Chapter
 from models.manga import Manga
 from models.manga_history import MangaHistory
 from ui.widgets.reader_ui import Ui_Form
-from utils.database import Database
 from utils.decorators import catch_exception
 from utils.file_manager import FileManager
 from utils.scrapper_manager import get_scrapper
-from utils.threads import Worker, ThreadPool
 from widgets.window_widgets.manga_window_widgets.manga_window_widget import MangaWindowWidget
-from widgets.window_widgets.window_widget import WindowWidget
 
 
 class Reader(MangaWindowWidget):

@@ -5,12 +5,13 @@ from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QWidget
 
 from ui.widgets.settings_widget_preview_ui import Ui_settingsWidget
+from utils.app_info import ICONS_PATH
 from utils.decorators import catch_exception
 
 
 class SettingsPreviewWidget(QWidget):
     preview_clicked = pyqtSignal()
-    icons_path = rf"{os.getcwd()}\icons\settings_widgets"
+    icons_path = rf"{ICONS_PATH}\settings_widgets"
 
     def __init__(self):
         super().__init__()

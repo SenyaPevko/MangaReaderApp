@@ -6,7 +6,7 @@ from models.manga import Manga
 from ui.widgets.manga_preview_widget_ui import Ui_manga_widget
 from utils.decorators import catch_exception
 from utils.file_manager import FileManager
-from utils.threads import Worker, ThreadPool
+from utils.threads import Worker
 
 
 class MangaWidget(QWidget):

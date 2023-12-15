@@ -33,11 +33,3 @@ class Worker(QRunnable):
             self.signals.result.emit(result)
         finally:
             self.signals.finished.emit()
-
-@singleton
-class ThreadPool(object):
-    def __init__(self):
-        self.threadpool = QThreadPool()
-
-    def get_threadpool(self):
-        return self.threadpool

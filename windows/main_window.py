@@ -9,6 +9,7 @@ from models.manga import Manga
 from pages import library, update, history, browser, settings
 from pages.page import Page
 from ui.windows.main_window_ui2 import Ui_MainWindow
+from utils.app_info import ICONS_PATH
 from utils.decorators import catch_exception
 from widgets.window_widgets.manga_window_widgets.manga_info_widget import MangaInfoWidget
 from widgets.window_widgets.manga_window_widgets.reader import Reader
@@ -19,8 +20,7 @@ from utils.ui import set_icon
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('Sidebar layout')
-        self.setWindowIcon(QIcon("./icons/Logo.png"))
+        self.setWindowIcon(QIcon(f"{ICONS_PATH}/Logo.png"))
         self.ui = Ui_MainWindow()
         self.setMinimumSize(QSize(
             self.screen().size().width() // 2,
@@ -61,6 +61,7 @@ class MainWindow(QMainWindow):
             lambda: self.change_page(self.library_page, self.ui.libraryButton))
         self.ui.settingsButton.clicked.connect(
             lambda: self.change_page(self.settings_page, self.ui.settingsButton))
+        self.settings_page.widget_clicked.connect(self.set_widget)
 
     @catch_exception
     def setup_side_menu_icons(self):

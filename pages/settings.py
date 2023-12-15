@@ -5,6 +5,7 @@ from PyQt6.QtCore import pyqtSignal
 
 from pages.page import Page
 from ui.pages.settings_ui import Ui_Form
+from utils.app_info import ICONS_PATH
 from utils.decorators import catch_exception
 from widgets.settings_preview_widgets.cache_widget_preview import CachePreviewWidget
 from widgets.window_widgets.settings_widgets.about_app_widget import AboutAppWidget
@@ -15,8 +16,8 @@ from widgets.window_widgets.window_widget import WindowWidget
 
 class SettingsPage(Page):
     widget_clicked = pyqtSignal(WindowWidget)
-    closed_icon_path = rf"{os.getcwd()}\icons\side_menu\settings_closed.svg"
-    selected_icon_path = rf"{os.getcwd()}\icons\side_menu\settings_selected.svg"
+    closed_icon_path = rf"{ICONS_PATH}\side_menu\settings_closed.svg"
+    selected_icon_path = rf"{ICONS_PATH}\side_menu\settings_selected.svg"
 
     def __init__(self):
         super().__init__()

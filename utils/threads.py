@@ -3,7 +3,7 @@ from PyQt6.QtCore import QRunnable, pyqtSlot, QObject, pyqtSignal, QThreadPool
 import traceback
 import sys
 
-from utils.decorators import singleton
+from utils.decorators import singleton, catch_exception
 
 
 class WorkerSignals(QObject):
@@ -23,13 +23,17 @@ class Worker(QRunnable):
 
     @pyqtSlot()
     def run(self):
-        try:
-            result = self.fn(*self.args, **self.kwargs)
-        except Exception as e:
-            traceback.print_exc()
-            exctype, value = sys.exc_info()[:2]
-            self.signals.error.emit((exctype, value, traceback.format_exc()))
-        else:
-            self.signals.result.emit(result)
-        finally:
-            self.signals.finished.emit()
+        @catch_exception
+        def wrapped_run():
+            try:
+                result = self.fn(*self.args, **self.kwargs)
+            except Exception as e:
+                traceback.print_exc()
+                exctype, value = sys.exc_info()[:2]
+                self.signals.error.emit((exctype, value, traceback.format_exc()))
+            else:
+                self.signals.result.emit(result)
+            finally:
+                self.signals.finished.emit()
+
+        wrapped_run()

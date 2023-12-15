@@ -8,7 +8,7 @@ from models.chapter import Chapter
 from models.manga import Manga
 from pages import library, update, history, browser, settings
 from pages.page import Page
-from ui.windows.main_window_ui2 import Ui_MainWindow
+from ui.windows.main_window_ui import Ui_MainWindow
 from utils.app_info import ICONS_PATH
 from utils.decorators import catch_exception
 from widgets.window_widgets.manga_window_widgets.manga_info_widget import MangaInfoWidget
@@ -83,30 +83,30 @@ class MainWindow(QMainWindow):
         current_widget = self.pages_widget.currentWidget()
         if current_widget != page:
             if isinstance(current_widget, WindowWidget):
-                self.delete_widget(current_widget)
                 current_widget.close_widget()
-            self.pages_widget.removeWidget(self.pages_widget.currentWidget())
-            page.update()
-            set_icon(page.selected_icon_path, page_button, self.opened_icon_max_size)
-            set_icon(self.current_page.closed_icon_path, self.current_page_button,
-                     self.closed_icon_max_size)
-            self.pages_widget.addWidget(page)
-            self.pages_widget.setCurrentWidget(page)
-            self.current_page = page
-            self.current_page_button = page_button
+            if self.current_page != page:
+                self.pages_widget.removeWidget(self.pages_widget.currentWidget())
+                page.update()
+                set_icon(page.selected_icon_path, page_button, self.opened_icon_max_size)
+                set_icon(self.current_page.closed_icon_path, self.current_page_button,
+                         self.closed_icon_max_size)
+                self.pages_widget.addWidget(page)
+                self.pages_widget.setCurrentWidget(page)
+                self.current_page = page
+                self.current_page_button = page_button
 
     @pyqtSlot(WindowWidget)
     def open_widget(self, widget: WindowWidget):
         self.pages_widget.setEnabled(False)
         widget.setup_done.connect(lambda: self.set_widget(widget))
         widget.setup_error.connect(lambda: self.delete_widget(widget))
-        widget.exit_page.connect(lambda: self.delete_widget(widget))
 
     @pyqtSlot(WindowWidget)
     def set_widget(self, widget: WindowWidget):
         self.pages_widget.addWidget(widget)
         self.pages_widget.setCurrentWidget(widget)
         self.pages_widget.setEnabled(True)
+        widget.exit_page.connect(lambda: self.delete_widget(widget))
 
     @pyqtSlot(WindowWidget)
     def delete_widget(self, widget: WindowWidget):

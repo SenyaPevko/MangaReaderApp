@@ -1,4 +1,4 @@
-from PyQt6.QtCore import Qt, QSize, QThreadPool, pyqtSlot
+from PyQt6.QtCore import Qt, QSize, pyqtSlot
 from PyQt6.QtGui import QPixmap
 
 from models.chapter import Chapter
@@ -8,6 +8,7 @@ from ui.widgets.reader_ui import Ui_Form
 from utils.decorators import catch_exception
 from utils.file_manager import FileManager
 from utils.scrapper_manager import get_scrapper
+from utils.threads import Worker
 from widgets.window_widgets.manga_window_widgets.manga_window_widget import MangaWindowWidget
 
 

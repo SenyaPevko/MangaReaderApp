@@ -112,6 +112,12 @@ class Manganelo(Scrapper):
     def get_manga_id(self, manga_url):
         return manga_url.split("-")[-1]
 
+    def get_all_genres(self):
+        all_genres = []
+        source = requests.get(f"https://m.manganelo.com/genre-all-update-latest").text
+        soup = BeautifulSoup(source, "lxml")
+
+
     @staticmethod
     def get_user_agent():
         return Manganelo.USER_AGENT

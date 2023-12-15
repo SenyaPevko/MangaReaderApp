@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QApplication
 
 from app import App
 from windows.main_window import MainWindow
-# pyuic6.exe .\main_window2.ui -o .\main_window_ui2.py
+# pyuic6.exe .\main_window.ui -o .\main_window_ui.py
 
 
 def main():

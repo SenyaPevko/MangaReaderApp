@@ -11,6 +11,7 @@ from utils.threads import Worker
 
 class MangaWidget(QWidget):
     manga_clicked = pyqtSignal(Manga)
+
     def __init__(self, manga):
         super().__init__()
         self.ui = Ui_manga_widget()

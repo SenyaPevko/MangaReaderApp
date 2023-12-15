@@ -21,6 +21,9 @@ class Scrapper:
     def get_content(self, page, request):
         pass
 
+    def get_all_genres(self):
+        pass
+
     @staticmethod
     def get_user_agent():
         pass

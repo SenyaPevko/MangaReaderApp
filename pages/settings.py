@@ -52,3 +52,7 @@ class SettingsPage(Page):
     @catch_exception
     def setup_ui(self):
         self.ui.settingsWidgetsLayout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+
+    @catch_exception
+    def update(self):
+        self.cache_preview_widget.update()

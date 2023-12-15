@@ -24,3 +24,8 @@ class CachePreviewWidget(SettingsPreviewWidget):
         self.ui.descriptionLabel.setText(f"Занимаемая память: {temp_size}")
         self.setProperty('is_set', 0)
         self.set_icon(self.icon_path)
+
+    @catch_exception
+    def update(self):
+        temp_size = self.file_manager.get_temp_size()
+        self.ui.descriptionLabel.setText(f"Занимаемая память: {temp_size}")

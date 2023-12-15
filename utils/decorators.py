@@ -1,3 +1,4 @@
+import sys
 from functools import wraps
 from typing import Callable
 
@@ -33,5 +34,6 @@ def catch_exception(func: Callable):
             return func(*args, **kwargs)
         except Exception as e:
             print(e)
+            print(sys.exc_info()[:2])
 
     return wrapper

@@ -26,10 +26,10 @@ class MangaInfoWidget(MangaWindowWidget):
     @catch_exception
     def setup(self):
         def scrape_manga():
-            if self.manga.id is not None:
-                return
             self.scrapper = get_scrapper(self.manga.scrapper)()
-            self.manga = self.scrapper.scrape_manga(self.manga)
+            scraped_manga = self.scrapper.scrape_manga(self.manga)
+            if scraped_manga is not None:
+                self.manga = scraped_manga
 
         self.setup_ui()
         worker = Worker(scrape_manga)

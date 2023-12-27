@@ -3,15 +3,15 @@ import os
 from PyQt6.QtCore import QThreadPool, pyqtSignal
 
 from models.manga import Manga
-from pages.page import Page
-from ui.pages.browser_ui import Ui_Form
+from Views.pages.page import Page
+from Views.ui.pages.browser_ui import Ui_Form
 from utils.app_info import ICONS_PATH
 from utils.decorators import catch_exception
 from utils.threads import Worker
 
-from widgets.manga_scroll_area import MangaScrollArea
+from Views.widgets.manga_scroll_area import MangaScrollArea
 from scrappers.Manganelo import Manganelo
-from widgets.manga_preview_widget import MangaWidget
+from Views.widgets.manga_preview_widget import MangaWidget
 
 
 class BrowserPage(Page):

@@ -2,15 +2,15 @@ from PyQt6.QtCore import QSize, Qt, pyqtSlot
 from PyQt6.QtGui import QPixmap, QBrush, QColor
 from PyQt6.QtWidgets import QListWidgetItem
 
-from Enums.BookMark import BookMark
-from Enums.Libs import Libs
+from Views.widgets.window_widgets.manga_window_widgets.BookMark import BookMark
+from Views.Libs import Libs
 from models.manga import Manga
 from utils.decorators import catch_exception
 from utils.scrapper_manager import get_scrapper
-from ui.widgets.manga_info_widget_ui import Ui_Form
+from Views.ui.widgets.manga_info_widget_ui import Ui_Form
 from utils.file_manager import FileManager
 from utils.threads import Worker
-from widgets.window_widgets.manga_window_widgets.manga_window_widget import MangaWindowWidget
+from Views.widgets.window_widgets.manga_window_widgets.manga_window_widget import MangaWindowWidget
 
 
 class MangaInfoWidget(MangaWindowWidget):
@@ -26,6 +26,8 @@ class MangaInfoWidget(MangaWindowWidget):
     @catch_exception
     def setup(self):
         def scrape_manga():
+            if self.manga.id is not None:
+                return
             self.scrapper = get_scrapper(self.manga.scrapper)()
             self.manga = self.scrapper.scrape_manga(self.manga)
 

@@ -1,17 +1,15 @@
-import os
-
 from PyQt6 import QtCore
 from PyQt6.QtCore import pyqtSignal
 
-from pages.page import Page
-from ui.pages.settings_ui import Ui_Form
+from Views.pages.page import Page
+from Views.ui.pages.settings_ui import Ui_Form
 from utils.app_info import ICONS_PATH
 from utils.decorators import catch_exception
-from widgets.settings_preview_widgets.cache_widget_preview import CachePreviewWidget
-from widgets.window_widgets.settings_widgets.about_app_widget import AboutAppWidget
-from widgets.settings_preview_widgets.about_app_widget_preview import AboutAppWidgetPreview
-from widgets.window_widgets.settings_widgets.cache_widget import CacheWidget
-from widgets.window_widgets.window_widget import WindowWidget
+from Views.widgets.settings_preview_widgets.cache_widget_preview import CachePreviewWidget
+from Views.widgets.window_widgets.settings_widgets.about_app_widget import AboutAppWidget
+from Views.widgets.settings_preview_widgets.about_app_widget_preview import AboutAppWidgetPreview
+from Views.widgets.window_widgets.settings_widgets.cache_widget import CacheWidget
+from Views.widgets.window_widgets.window_widget import WindowWidget
 
 
 class SettingsPage(Page):

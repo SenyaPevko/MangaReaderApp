@@ -4,12 +4,12 @@ from PyQt6.QtGui import QPixmap
 from models.chapter import Chapter
 from models.manga import Manga
 from models.manga_history import MangaHistory
-from ui.widgets.reader_ui import Ui_Form
+from Views.ui.widgets.reader_ui import Ui_Form
 from utils.decorators import catch_exception
 from utils.file_manager import FileManager
 from utils.scrapper_manager import get_scrapper
 from utils.threads import Worker
-from widgets.window_widgets.manga_window_widgets.manga_window_widget import MangaWindowWidget
+from Views.widgets.window_widgets.manga_window_widgets.manga_window_widget import MangaWindowWidget
 
 
 class Reader(MangaWindowWidget):
@@ -47,6 +47,7 @@ class Reader(MangaWindowWidget):
     def close_widget(self):
         self.save_chapter()
         self.save_manga_history()
+        self.threadpool.clear()
         self.exit_page.emit()
 
     @pyqtSlot()

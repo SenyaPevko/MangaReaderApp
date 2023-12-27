@@ -1,16 +1,14 @@
-import os
-
 from PyQt6.QtCore import pyqtSignal, pyqtSlot
 
-from Enums.Libs import Libs
+from Views.Libs import Libs
 from models.manga import Manga
-from pages.page import Page
-from ui.pages.library_ui import Ui_Form
+from Views.pages.page import Page
+from Views.ui.pages.library_ui import Ui_Form
 from utils.app_info import ICONS_PATH
 from utils.database import Database
 from utils.decorators import catch_exception
-from widgets.manga_preview_widget import MangaWidget
-from widgets.manga_scroll_area import MangaScrollArea
+from Views.widgets.manga_preview_widget import MangaWidget
+from Views.widgets.manga_scroll_area import MangaScrollArea
 
 
 class LibraryPage(Page):
@@ -52,6 +50,7 @@ class LibraryPage(Page):
     def show_current_lib(self):
         self.manga_scroll_area.delete_content()
         manga_list = []
+
         for manga in self.db.get_mangas_by_lib(self.lib_menu.currentText()):
             manga_widget = MangaWidget(manga)
             manga_widget.manga_clicked.connect(self.manga_open)

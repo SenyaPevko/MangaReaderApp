@@ -1,6 +1,6 @@
 from utils import app_info
 from utils.decorators import catch_exception
-from widgets.settings_preview_widgets.settings_preview_widget import SettingsPreviewWidget
+from Views.widgets.settings_preview_widgets.settings_preview_widget import SettingsPreviewWidget
 
 
 class AboutAppWidgetPreview(SettingsPreviewWidget):

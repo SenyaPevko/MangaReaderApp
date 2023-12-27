@@ -2,7 +2,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QScrollArea, QWidget, QVBoxLayout, QGridLayout, QSpacerItem, QSizePolicy, QLabel
 
 from utils.decorators import catch_exception
-from widgets.manga_preview_widget import MangaWidget
+from Views.widgets.manga_preview_widget import MangaWidget
 
 
 class MangaScrollArea(QScrollArea):
@@ -46,7 +46,7 @@ class MangaScrollArea(QScrollArea):
         for manga in manga_list:
             self.manga_list.append(manga)
             self.content_grid.addWidget(manga, raw_count, column_count,
-                                         Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+                                        Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
             manga.update_image()
             column_count += 1
             if column_count == self.column_count - 1:

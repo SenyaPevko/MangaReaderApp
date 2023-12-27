@@ -1,12 +1,11 @@
 from PyQt6 import QtCore
-from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QPushButton, QSizePolicy
+from PyQt6.QtWidgets import QGridLayout, QLabel, QPushButton
 from PyQt6.QtGui import QFont, QCursor
 from PyQt6.QtCore import Qt, pyqtSlot
 
-from utils import app_info
 from utils.decorators import catch_exception
 from utils.file_manager import FileManager
-from widgets.window_widgets.window_widget import WindowWidget
+from Views.widgets.window_widgets.window_widget import WindowWidget
 
 
 class CacheWidget(WindowWidget):

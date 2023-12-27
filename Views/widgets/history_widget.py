@@ -1,13 +1,10 @@
-import os
-
 from PyQt6.QtCore import pyqtSignal, Qt, QThreadPool, QSize
-from PyQt6.QtGui import QIcon, QPixmap
+from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QWidget
 
-from models.chapter import Chapter
 from models.manga import Manga
 from models.manga_history import MangaHistory
-from ui.widgets.history_widget_ui import Ui_historyWidget
+from Views.ui.widgets.history_widget_ui import Ui_historyWidget
 from utils.app_info import ICONS_PATH
 from utils.database import Database
 from utils.decorators import catch_exception

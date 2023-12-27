@@ -1,4 +1,3 @@
-import platformdirs
 import re
 import os
 import shutil
@@ -56,6 +55,8 @@ class FileManager:
         return path
 
     def save_image(self, path, image, user_agent):
+        if self.check_file_exists(path):
+            return
         self.create_directory(os.path.split(path)[0])
         image_content = requests.get(image, headers=user_agent).content
         self.save_file(path, image_content)

@@ -3,14 +3,14 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
 from app import App
-from windows.main_window import MainWindow
-# pyuic6.exe .\main_window.ui -o .\main_window_ui.py
+from Views.windows.main_window import MainWindow
+# pyuic6.exe .\library.ui -o .\library_ui.py
 
 
 def main():
     QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.RoundPreferFloor)
     app = App(sys.argv)
-    with open("ui/styles/widgets.qss", "r") as f:
+    with open("Views/ui/styles/widgets.qss", "r") as f:
         app.setStyleSheet(f.read())
     window = MainWindow()
     window.show()

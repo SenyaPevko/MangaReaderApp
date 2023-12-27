@@ -1,10 +1,8 @@
-import os
-
 from PyQt6.QtCore import pyqtSignal, Qt, QSize
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QWidget
 
-from ui.widgets.settings_widget_preview_ui import Ui_settingsWidget
+from Views.ui.widgets.settings_widget_preview_ui import Ui_settingsWidget
 from utils.app_info import ICONS_PATH
 from utils.decorators import catch_exception
 

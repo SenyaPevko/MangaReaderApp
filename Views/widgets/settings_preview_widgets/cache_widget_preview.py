@@ -1,6 +1,6 @@
 from utils.decorators import catch_exception
 from utils.file_manager import FileManager
-from widgets.settings_preview_widgets.settings_preview_widget import SettingsPreviewWidget
+from Views.widgets.settings_preview_widgets.settings_preview_widget import SettingsPreviewWidget
 
 
 class CachePreviewWidget(SettingsPreviewWidget):

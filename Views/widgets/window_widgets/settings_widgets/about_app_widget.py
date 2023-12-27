@@ -1,9 +1,9 @@
-from PyQt6.QtWidgets import  QWidget, QGridLayout, QLabel
+from PyQt6.QtWidgets import QGridLayout, QLabel
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
 
 from utils import app_info
-from widgets.window_widgets.window_widget import WindowWidget
+from Views.widgets.window_widgets.window_widget import WindowWidget
 
 
 class AboutAppWidget(WindowWidget):

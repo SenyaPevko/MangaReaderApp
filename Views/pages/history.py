@@ -3,13 +3,12 @@ import os
 from PyQt6 import QtCore
 from PyQt6.QtCore import Qt, pyqtSignal
 from models.manga import Manga
-from models.manga_history import MangaHistory
-from pages.page import Page
-from ui.pages.history_ui import Ui_Form
+from Views.pages.page import Page
+from Views.ui.pages.history_ui import Ui_Form
 from utils.app_info import ICONS_PATH
 from utils.database import Database
 from utils.decorators import catch_exception
-from widgets.history_widget import HistoryWidget
+from Views.widgets.history_widget import HistoryWidget
 
 
 class HistoryPage(Page):

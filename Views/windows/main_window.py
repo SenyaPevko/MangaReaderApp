@@ -6,14 +6,14 @@ from PyQt6.QtWidgets import QMainWindow, QLabel
 
 from models.chapter import Chapter
 from models.manga import Manga
-from pages import library, update, history, browser, settings
-from pages.page import Page
-from ui.windows.main_window_ui import Ui_MainWindow
+from Views.pages import library, update, history, browser, settings
+from Views.pages.page import Page
+from Views.ui.windows.main_window_ui import Ui_MainWindow
 from utils.app_info import ICONS_PATH
 from utils.decorators import catch_exception
-from widgets.window_widgets.manga_window_widgets.manga_info_widget import MangaInfoWidget
-from widgets.window_widgets.manga_window_widgets.reader import Reader
-from widgets.window_widgets.window_widget import WindowWidget
+from Views.widgets.window_widgets.manga_window_widgets.manga_info_widget import MangaInfoWidget
+from Views.widgets.window_widgets.manga_window_widgets.reader import Reader
+from Views.widgets.window_widgets.window_widget import WindowWidget
 from utils.ui import set_icon
 
 

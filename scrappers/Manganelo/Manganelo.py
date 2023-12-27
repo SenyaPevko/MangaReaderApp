@@ -1,4 +1,4 @@
-from Enums.ManganeloUrls import ManganeloUrls
+from scrappers.Manganelo.ManganeloUrls import ManganeloUrls
 from models.chapter_page import ChapterPage
 from models.chapter import Chapter
 from scrappers.scrapper import Scrapper
@@ -7,17 +7,18 @@ import requests
 from models.manga import Manga
 import re
 
+from utils.decorators import catch_exception
+
 
 class Manganelo(Scrapper):
-    USER_AGENT = {"User-Agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, "
-                                "like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36",
-                  "Referer": "https://chapmanganelo.com/"}
+    USER_AGENT = {"Referer": "https://chapmanganelo.com/"}
 
     def __init__(self):
         super().__init__()
         self.name = "Manganelo"
         self.current_url = ManganeloUrls.Catalog.value
 
+    @catch_exception
     def get_search_content(self, request: str, page: int):
         self.current_url = ManganeloUrls.Search.value
         source = requests.get(ManganeloUrls.Search.value
@@ -27,6 +28,7 @@ class Manganelo(Scrapper):
         cards = soup.find_all("div", class_="search-story-item")
         return cards
 
+    @catch_exception
     def get_catalog_content(self, page: int):
         self.current_url = ManganeloUrls.Catalog.value
         source = requests.get(f"{ManganeloUrls.Catalog.value}{page}").text
@@ -34,6 +36,7 @@ class Manganelo(Scrapper):
         cards = soup.find_all("div", class_="content-genres-item")
         return cards
 
+    @catch_exception
     def get_content(self, request, page):
         if request == "":
             cards = self.get_catalog_content(page)
@@ -43,7 +46,8 @@ class Manganelo(Scrapper):
             self.current_url = (ManganeloUrls.Search.value
                                 + "_".join(request.split())
                                 + fr"?page={str(page)}")
-
+        if cards is None:
+            return []
         for card in cards:
             name = card.find_next("a")["title"]
             url = card.find_next("a")["href"]
@@ -54,6 +58,7 @@ class Manganelo(Scrapper):
 
             yield manga
 
+    @catch_exception
     def get_catalog_pages(self):
         try:
             source = requests.get(f"{self.current_url}").text
@@ -66,11 +71,13 @@ class Manganelo(Scrapper):
             print(e)
         return 1
 
+    @catch_exception
     def get_mangas_names(self, request, page):
         cards = self.get_search_content(request, page)
         for card in cards:
             yield card.find_next("a")["title"]
 
+    @catch_exception
     def scrape_manga(self, manga: Manga):
         source = requests.get(manga.url).text
         soup = BeautifulSoup(source, "lxml")
@@ -89,6 +96,7 @@ class Manganelo(Scrapper):
 
         return manga
 
+    @catch_exception
     def get_chapters(self, manga: Manga):
         source = requests.get(manga.url).text
         soup = BeautifulSoup(source, "lxml")
@@ -99,6 +107,7 @@ class Manganelo(Scrapper):
             chapter_list.append(Chapter(url, title, "", "", manga.get_id(), manga.scrapper, url.split("-")[-1]))
         return chapter_list[::-1]
 
+    @catch_exception
     def get_chapter_pages(self, chapter: Chapter):
         source = requests.get(chapter.url).text
         soup = BeautifulSoup(source, "lxml")
@@ -112,6 +121,7 @@ class Manganelo(Scrapper):
     def get_manga_id(self, manga_url):
         return manga_url.split("-")[-1]
 
+    @catch_exception
     def get_all_genres(self):
         all_genres = []
         source = requests.get(f"https://m.manganelo.com/genre-all-update-latest").text

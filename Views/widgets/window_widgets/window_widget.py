@@ -1,7 +1,5 @@
-from PyQt6.QtCore import pyqtSignal, pyqtSlot, QThreadPool
+from PyQt6.QtCore import pyqtSignal, pyqtSlot
 from PyQt6.QtWidgets import QWidget
-
-from utils.database import Database
 
 
 class WindowWidget(QWidget):

@@ -1,7 +1,7 @@
 from PyQt6.QtCore import pyqtSignal, QThreadPool
 
 from utils.database import Database
-from widgets.window_widgets.window_widget import WindowWidget
+from Views.widgets.window_widgets.window_widget import WindowWidget
 
 
 class MangaWindowWidget(WindowWidget):

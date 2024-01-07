@@ -9,7 +9,7 @@ class MangaScrollArea(QScrollArea):
     def __init__(self, parent):
         super().__init__()
         self.setWidgetResizable(True)
-        self.column_count = 7
+        self.columns_count = 7
         self.manga_list = []
 
         self.scroll_area_content = QWidget()
@@ -42,14 +42,15 @@ class MangaScrollArea(QScrollArea):
 
     @catch_exception
     def add_content(self, manga_list: list[MangaWidget]):
-        raw_count, column_count = 0, 0
+        raw_count = 0
+        column_count = 0
         for manga in manga_list:
             self.manga_list.append(manga)
             self.content_grid.addWidget(manga, raw_count, column_count,
                                         Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
             manga.update_image()
             column_count += 1
-            if column_count == self.column_count - 1:
+            if column_count == self.columns_count - 1:
                 column_count = 0
                 raw_count += 1
         self.is_content_empy()
@@ -64,7 +65,7 @@ class MangaScrollArea(QScrollArea):
 
     @catch_exception
     def update_content(self):
-        size = self.size().width() // self.column_count
+        size = self.size().width() // self.columns_count
         [item.set_size(size) for item in self.manga_list]
 
     @catch_exception

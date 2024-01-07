@@ -1,7 +1,9 @@
 import os
 
 from PyQt6.QtCore import QThreadPool, pyqtSignal
+from PyQt6.QtGui import QIcon
 
+from Views.windows.filters_dialog import FiltersDialog
 from models.manga import Manga
 from Views.pages.page import Page
 from Views.ui.pages.browser_ui import Ui_Form
@@ -32,11 +34,14 @@ class BrowserPage(Page):
 
         self.search_bar = self.ui.searchBar
         self.pages_list = self.ui.pagesList
+        self.filters = FiltersDialog(self.scrapper.get_all_genres())
 
         self.search_button = self.ui.searchButton
         self.filter_button = self.ui.filterButton
         self.page = 1
         self.request = ""
+        self.added_genres = []
+        self.removed_genres = []
 
         self.setup()
 
@@ -47,7 +52,12 @@ class BrowserPage(Page):
 
     @catch_exception
     def setup_ui(self):
+        self.filters.setWindowTitle("Фильтры")
+        self.filters.setWindowIcon(QIcon(f"{ICONS_PATH}/Logo.png"))
+        self.filters.accepted.connect(self.accept_filters)
+        self.filters.discarded.connect(self.discard_filters)
         self.search_button.clicked.connect(lambda: self.open_catalog(self.search_bar.text(), 1))
+        self.filter_button.clicked.connect(self.open_filters)
         self.search_bar.returnPressed.connect(lambda: self.open_catalog(self.search_bar.text(), 1))
         self.pages_list.currentIndexChanged.connect(
             lambda: self.get_content(self.request, self.pages_list.currentIndex() + 1))
@@ -61,6 +71,9 @@ class BrowserPage(Page):
         self.get_content(request, page)
         self.set_pages_list()
 
+    def open_filters(self):
+        self.filters.exec()
+
     @catch_exception
     def get_content(self, request: str, page: int):
         self.request = request
@@ -68,7 +81,7 @@ class BrowserPage(Page):
             return
         self.change_page(page)
         mangas = []
-        worker = Worker(lambda: self.scrapper.get_content(request, page))
+        worker = Worker(lambda: self.scrapper.get_content(request, page, self.added_genres, self.removed_genres))
         worker.signals.result.connect(lambda x: mangas.extend(x))
         worker.signals.finished.connect(lambda: self.add_content(mangas))
         self.threadpool.start(worker)
@@ -98,3 +111,18 @@ class BrowserPage(Page):
         self.pages_list.clear()
         for i in range(1, self.scrapper.get_catalog_pages() + 1):
             self.pages_list.addItem(str(i))
+
+    @catch_exception
+    def accept_filters(self):
+        self.removed_genres = self.filters.get_removed_genres()
+        self.added_genres = self.filters.get_selected_genres()
+        self.open_catalog(self.search_bar.text(), 1)
+
+    @catch_exception
+    def discard_filters(self):
+        if len(self.removed_genres) == 0 and len(self.added_genres) == 0:
+            return
+        
+        self.removed_genres = []
+        self.added_genres = []
+        self.open_catalog(self.search_bar.text(), 1)

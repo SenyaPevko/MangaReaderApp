@@ -26,6 +26,7 @@ class Manganelo(Scrapper):
                               + fr"?page={str(page)}").text
         soup = BeautifulSoup(source, "lxml")
         cards = soup.find_all("div", class_="search-story-item")
+
         return cards
 
     @catch_exception
@@ -34,11 +35,26 @@ class Manganelo(Scrapper):
         source = requests.get(f"{ManganeloUrls.Catalog.value}{page}").text
         soup = BeautifulSoup(source, "lxml")
         cards = soup.find_all("div", class_="content-genres-item")
+
         return cards
 
     @catch_exception
-    def get_content(self, request, page):
-        if request == "":
+    def get_advanced_search_content(self, request, page, added_genres, removed_genres):
+        added_genres_url_part = "" if len(added_genres) == 0 else "_" + "_".join(added_genres)
+        removed_genres_url_part = "" if len(removed_genres) == 0 else "_" + "_".join(removed_genres)
+        self.current_url = (f"{ManganeloUrls.AdvancedSearch.value}?s=all&g_i={added_genres_url_part}"
+                            f"_&g_e={removed_genres_url_part}_&page={page}&keyw={request}")
+        source = requests.get(self.current_url).text
+        soup = BeautifulSoup(source, "lxml")
+        cards = soup.find_all("div", class_="content-genres-item")
+
+        return cards
+
+    @catch_exception
+    def get_content(self, request, page, added_genres: list[str], removed_genres: list[str]):
+        if len(added_genres) > 0 or len(removed_genres) > 0:
+            cards = self.get_advanced_search_content(request, page, added_genres, removed_genres)
+        elif request == "":
             cards = self.get_catalog_content(page)
             self.current_url = ManganeloUrls.Catalog.value
         else:
@@ -69,13 +85,8 @@ class Manganelo(Scrapper):
             return int(last_page)
         except Exception as e:
             print(e)
-        return 1
 
-    @catch_exception
-    def get_mangas_names(self, request, page):
-        cards = self.get_search_content(request, page)
-        for card in cards:
-            yield card.find_next("a")["title"]
+        return 1
 
     @catch_exception
     def scrape_manga(self, manga: Manga):
@@ -104,7 +115,9 @@ class Manganelo(Scrapper):
         for chapter in soup.find("ul", class_="row-content-chapter").findAll("li"):
             url = chapter.find("a")["href"]
             title = chapter.find("a")["title"]
-            chapter_list.append(Chapter(url, title, "", "", manga.get_id(), manga.scrapper, url.split("-")[-1]))
+            chapter_list.append(Chapter(url, title, "", "", manga.get_id(),
+                                        manga.scrapper, url.split("-")[-1]))
+
         return chapter_list[::-1]
 
     @catch_exception
@@ -113,20 +126,32 @@ class Manganelo(Scrapper):
         soup = BeautifulSoup(source, "lxml")
         count = 0
         pages_list = []
-        for page in soup.find("div", class_="container-chapter-reader").find_all("img", class_="reader-content"):
+        pages = (soup.find("div", class_="container-chapter-reader")
+                 .find_all("img", class_="reader-content"))
+        for page in pages:
             count += 1
             pages_list.append(ChapterPage(count, page["src"]))
+
         return pages_list
 
-    def get_manga_id(self, manga_url):
+    @staticmethod
+    def get_manga_id(manga_url):
         return manga_url.split("-")[-1]
 
     @catch_exception
     def get_all_genres(self):
-        all_genres = []
+        all_genres = {}
         source = requests.get(f"https://m.manganelo.com/genre-all-update-latest").text
         soup = BeautifulSoup(source, "lxml")
+        genres = (soup.find("div", class_="advanced-search-tool-genres-list")
+                  .find_all("span",
+                            class_="advanced-search-tool-genres-item-choose advanced-search-tool-genres-item a-h text-nowrap"))
+        for genre in genres:
+            genre_id = genre["data-i"]
+            genre_title = genre.text
+            all_genres[genre_title] = genre_id
 
+        return all_genres
 
     @staticmethod
     def get_user_agent():

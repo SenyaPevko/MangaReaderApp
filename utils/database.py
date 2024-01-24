@@ -18,7 +18,7 @@ class Database(object):
         self.file_manager = FileManager()
         self.file_manager.create_directory(self.DIR_PATH)
         self.path = self.DIR_PATH + self.FILE_NAME
-        self.file_manager.save_file(self.path, None)
+        self.file_manager.save_file(self.path, bytearray())
         self.connection = sqlite3.connect(self.path)
         self.cursor = self.connection.cursor()
         self.setup_tables()

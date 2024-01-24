@@ -4,7 +4,6 @@ from PyQt6.QtWidgets import QApplication
 
 from app import App
 from Views.windows.main_window import MainWindow
-# pyuic6.exe .\browser.ui -o .\browser_ui.py
 
 
 def main():

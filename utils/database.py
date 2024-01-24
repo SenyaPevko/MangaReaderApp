@@ -21,7 +21,7 @@ class Database(object):
         self.file_manager.save_file(self.path, None)
         self.connection = sqlite3.connect(self.path)
         self.cursor = self.connection.cursor()
-        self.setup_tabels()
+        self.setup_tables()
 
     @lock_thread(lock)
     def add_manga(self, manga: Manga):
@@ -110,7 +110,7 @@ class Database(object):
         self.connection.commit()
 
     @lock_thread(lock)
-    def setup_tabels(self):
+    def setup_tables(self):
         self.cursor.execute(
             """CREATE TABLE IF NOT EXISTS Mangas (id STRING PRIMARY KEY ON CONFLICT REPLACE NOT NULL,
         name STRING, description TEXT, status STRING, chapters INTEGER, url STRING, image STRING, 

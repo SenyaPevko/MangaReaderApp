@@ -21,6 +21,7 @@ class MangaInfoWidget(MangaWindowWidget):
         self.manga = manga
         self.chapters = None
         self.chapters_list = self.ui.chaptersList
+        self.file_manager = FileManager()
         self.setup()
 
     @catch_exception
@@ -53,7 +54,6 @@ class MangaInfoWidget(MangaWindowWidget):
         self.ui.descriptionBrowser.setText(self.manga.description)
         self.ui.chaptersLabel.setText("Глав: " + str(self.manga.chapters))
         self.ui.genresLabel.setText("Жанры: " + self.manga.genres)
-        self.file_manager = FileManager()
         self.set_preview_image()
         self.set_chapters()
         self.set_libs_list()
